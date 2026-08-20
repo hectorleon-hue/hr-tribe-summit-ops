@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>P&L en Vivo — 3er HR Tribe Summit 2026</title>
+<style>
+:root{
+  --navy:#041328; --navy-med:#0A1E36; --navy-light:#122D4D; --navy-line:#1B3B5F;
+  --cian:#33B4D2; --cian-neon:#3AEBFF; --cian-dark:#1A8BA8;
+  --oro:#D4A93C; --oro-soft:#E8C766; --oro-deep:#9C7A20;
+  --rojo:#BE2831; --verde:#31A540; --verde-b:#4CC65C;
+  --txt:#EAF2F8; --txt-sec:#8FA6BC; --edit:#FFF4C2;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Open Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  background:var(--navy); color:var(--txt); line-height:1.5; padding:0 0 60px;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,.num,.tag{font-family:'Montserrat',-apple-system,'Segoe UI',sans-serif}
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+
+/* HEADER */
+header{
+  background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 55%,#0d3a5c 100%);
+  border-bottom:2px solid var(--oro); padding:34px 0 30px; position:relative; overflow:hidden;
+}
+header::after{content:'';position:absolute;right:-90px;top:-90px;width:340px;height:340px;
+  background:radial-gradient(circle,rgba(51,180,210,.22) 0%,transparent 68%);}
+.kicker{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--cian);font-weight:700}
+header h1{font-size:clamp(26px,4vw,40px);font-weight:800;letter-spacing:-.02em;margin:8px 0 6px}
+header h1 span{color:var(--oro)}
+.sub{color:var(--txt-sec);font-size:14px}
+.stamp{position:absolute;right:24px;top:34px;text-align:right;font-size:11px;color:var(--txt-sec);z-index:2}
+.stamp b{display:block;font-family:Montserrat,sans-serif;font-size:22px;color:var(--oro);font-weight:800}
+
+/* KPI STRIP */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin:26px 0 6px}
+.kpi{background:var(--navy-med);border:1px solid var(--navy-line);border-left:3px solid var(--cian);
+  border-radius:8px;padding:16px 18px}
+.kpi.gold{border-left-color:var(--oro)} .kpi.green{border-left-color:var(--verde-b)}
+.kpi .lbl{font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--txt-sec);font-weight:700}
+.kpi .val{font-family:Montserrat,sans-serif;font-size:27px;font-weight:800;margin-top:6px;letter-spacing:-.02em}
+.kpi .foot{font-size:11.5px;color:var(--txt-sec);margin-top:3px}
+.pos{color:var(--verde-b)} .neg{color:var(--rojo)} .au{color:var(--oro)} .ac{color:var(--cian-neon)}
+
+section{margin-top:34px}
+.shead{display:flex;align-items:baseline;gap:12px;border-bottom:1px solid var(--navy-line);
+  padding-bottom:9px;margin-bottom:18px}
+.shead h2{font-size:17px;font-weight:800;letter-spacing:-.01em}
+.shead .hint{font-size:12px;color:var(--txt-sec)}
+.tag{display:inline-block;background:rgba(212,169,60,.14);color:var(--oro-soft);border:1px solid rgba(212,169,60,.35);
+  font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:3px 9px;border-radius:20px}
+
+/* PANELS */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.panel{background:var(--navy-med);border:1px solid var(--navy-line);border-radius:10px;padding:18px 20px}
+.panel h3{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--cian);
+  font-weight:800;margin-bottom:14px}
+
+/* INPUT ROWS */
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:6px 0;
+  border-bottom:1px dotted rgba(143,166,188,.18)}
+.row:last-child{border-bottom:none}
+.row label{font-size:13px;color:var(--txt);flex:1}
+.row .note{display:block;font-size:11px;color:var(--txt-sec)}
+input[type=number]{
+  background:var(--edit);border:1px solid #C9A227;border-radius:5px;color:#1B1B1B;
+  font-family:Montserrat,sans-serif;font-weight:700;font-size:13.5px;text-align:right;
+  padding:6px 9px;width:112px;outline:none;transition:box-shadow .15s
+}
+input[type=number]:focus{box-shadow:0 0 0 3px rgba(51,180,210,.45);border-color:var(--cian)}
+.suffix{font-size:11px;color:var(--txt-sec);width:22px}
+
+/* TABLE */
+.tw{overflow-x:auto;border-radius:10px;border:1px solid var(--navy-line)}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:660px;background:var(--navy-med)}
+th,td{padding:11px 16px;text-align:right}
+th:first-child,td:first-child{text-align:left}
+thead th{background:var(--navy-light);font-family:Montserrat,sans-serif;font-size:11px;
+  letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--txt);
+  border-bottom:2px solid var(--oro)}
+thead th.hi{color:var(--oro)}
+tbody td{border-bottom:1px solid rgba(27,59,95,.55);font-variant-numeric:tabular-nums}
+tr.sec td{background:rgba(51,180,210,.07);font-weight:700}
+tr.tot td{background:var(--navy-light);font-family:Montserrat,sans-serif;font-weight:800;font-size:14.5px;
+  border-top:2px solid var(--oro);border-bottom:none}
+tr.sub td{color:var(--txt-sec);font-size:12.5px}
+tr.pct td{background:rgba(212,169,60,.08);font-weight:700;color:var(--oro-soft)}
+td.d{color:var(--txt-sec);font-size:12px}
+
+/* BREAKEVEN */
+.beband{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+.be{background:linear-gradient(135deg,var(--navy-light),var(--navy-med));border:1px solid var(--navy-line);
+  border-top:3px solid var(--oro);border-radius:10px;padding:18px}
+.be .t{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--txt-sec);font-weight:700}
+.be .n{font-family:Montserrat,sans-serif;font-size:36px;font-weight:800;line-height:1.1;margin:8px 0 2px}
+.be .d{font-size:12px;color:var(--txt-sec)}
+
+.bar{height:26px;background:var(--navy);border:1px solid var(--navy-line);border-radius:5px;
+  overflow:hidden;position:relative;margin-top:12px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--cian-dark),var(--cian-neon))}
+.bar b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:Montserrat,sans-serif;font-size:11.5px;font-weight:800;letter-spacing:.05em}
+.mark{position:absolute;top:0;bottom:0;width:2px;background:var(--oro)}
+
+/* SLIDER */
+.sl{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+input[type=range]{flex:1;min-width:240px;accent-color:var(--cian);height:6px}
+.slval{font-family:Montserrat,sans-serif;font-size:30px;font-weight:800;color:var(--oro);min-width:78px}
+
+/* CHART */
+svg{display:block;width:100%;height:auto}
+.axis{stroke:rgba(143,166,188,.22);stroke-width:1}
+.glab{font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;fill:var(--txt-sec)}
+.gval{font-family:Montserrat,sans-serif;font-size:11.5px;font-weight:800;fill:var(--txt)}
+
+.alert{background:rgba(190,40,49,.11);border:1px solid rgba(190,40,49,.45);border-left:3px solid var(--rojo);
+  border-radius:8px;padding:15px 18px;font-size:13px;margin-top:16px}
+.alert b{color:#FF8C93;font-family:Montserrat,sans-serif}
+.info{background:rgba(51,180,210,.09);border:1px solid rgba(51,180,210,.32);border-left:3px solid var(--cian);
+  border-radius:8px;padding:15px 18px;font-size:13px;margin-top:16px}
+.info b{color:var(--cian-neon);font-family:Montserrat,sans-serif}
+.alert ul,.info ul{margin:8px 0 0 18px} .alert li,.info li{margin:4px 0;color:var(--txt-sec)}
+.alert li b,.info li b{color:var(--txt)}
+
+.btnrow{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+button{font-family:Montserrat,sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;padding:10px 18px;border-radius:6px;cursor:pointer;border:1px solid var(--cian);
+  background:transparent;color:var(--cian);transition:.15s}
+button:hover{background:var(--cian);color:var(--navy)}
+button.g{border-color:var(--oro);color:var(--oro)} button.g:hover{background:var(--oro);color:var(--navy)}
+
+footer{margin-top:46px;border-top:1px solid var(--navy-line);padding:20px 0;text-align:center;
+  font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt-sec);font-family:Montserrat,sans-serif}
+footer b{color:var(--oro)}
+
+/* ---- CONEXIÓN SUPABASE ---- */
+.conn{background:var(--navy-med);border:1px solid var(--navy-line);border-left:3px solid var(--oro);
+  border-radius:10px;padding:16px 20px;margin-top:22px}
+.conn .top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.dot{width:9px;height:9px;border-radius:50%;background:#6C757D;flex:none;box-shadow:0 0 0 3px rgba(108,117,125,.2)}
+.dot.on{background:var(--verde-b);box-shadow:0 0 0 3px rgba(76,198,92,.22)}
+.dot.err{background:var(--rojo);box-shadow:0 0 0 3px rgba(190,40,49,.22)}
+.dot.wait{background:var(--oro);box-shadow:0 0 0 3px rgba(212,169,60,.22)}
+#connMsg{font-size:12.5px;color:var(--txt-sec);flex:1;min-width:200px}
+#connMsg b{color:var(--txt);font-family:Montserrat,sans-serif}
+.conn .fields{display:none;gap:10px;margin-top:14px;flex-wrap:wrap;align-items:flex-end}
+.conn.open .fields{display:flex}
+.fld{flex:1;min-width:230px}
+.fld span{display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--txt-sec);font-weight:700;margin-bottom:5px;font-family:Montserrat,sans-serif}
+.fld input{width:100%;background:var(--edit);border:1px solid #C9A227;border-radius:5px;color:#1B1B1B;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;padding:8px 10px;outline:none}
+.fld input:focus{box-shadow:0 0 0 3px rgba(51,180,210,.45);border-color:var(--cian)}
+button.sm{padding:8px 14px;font-size:11px}
+button.gh{border-color:var(--verde-b);color:var(--verde-b)} button.gh:hover{background:var(--verde-b);color:var(--navy)}
+.saveflag{font-size:11px;font-family:Montserrat,sans-serif;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--txt-sec);transition:color .2s}
+.saveflag.ok{color:var(--verde-b)} .saveflag.busy{color:var(--oro)} .saveflag.bad{color:var(--rojo)}
+#trendWrap{display:none} #trendWrap.on{display:block}
+@media(max-width:860px){.grid2,.grid3{grid-template-columns:1fr}.stamp{position:static;text-align:left;margin-top:14px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="kicker">Grow2GetherMx · HR Tribe · PMO</div>
+    <h1>P&amp;L en Vivo — <span>3er HR Tribe Summit 2026</span></h1>
+    <p class="sub">Club Casino Monterrey · 26 de agosto 2026 · Modelo de flujo con IVA · Edita cualquier campo amarillo y todo recalcula al instante<br>
+      <a href="./index.html" style="color:var(--cian);text-decoration:none;font-weight:700">← Centro de Control operativo</a></p>
+    <div class="stamp">Corte de datos<b id="hoy">20 AGO 2026</b>44 transacciones · $191,235 bruto</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- CONEXIÓN -->
+  <div class="conn" id="conn">
+    <div class="top">
+      <span class="dot" id="connDot"></span>
+      <span id="connMsg"><b>Modo local.</b> Los cambios viven solo en este navegador. Conecta Supabase para que el comité vea las mismas cifras.</span>
+      <span class="saveflag" id="saveFlag"></span>
+      <button class="sm" onclick="document.getElementById('conn').classList.toggle('open')">⚙ Conexión</button>
+      <button class="sm gh" id="btnSnap" onclick="snapshot()" title="Congela el P&L de hoy en el histórico">⛳ Congelar corte de hoy</button>
+    </div>
+    <div class="fields">
+      <div class="fld"><span>Project URL</span><input id="sbUrl" placeholder="https://xxxxxxxx.supabase.co" spellcheck="false"></div>
+      <div class="fld"><span>Anon public key</span><input id="sbKey" placeholder="eyJhbGciOi..." spellcheck="false"></div>
+      <button class="sm" onclick="connect()">Conectar</button>
+      <button class="sm" onclick="disconnect()">Desconectar</button>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpis">
+    <div class="kpi"><div class="lbl">Asistentes hoy</div><div class="val ac" id="k1">62</div><div class="foot" id="k1f">57 pagados + 5 cortesías</div></div>
+    <div class="kpi gold"><div class="lbl">Ingreso neto realizado</div><div class="val au" id="k2">$0</div><div class="foot">Boletos cobrados, neto de comisiones</div></div>
+    <div class="kpi gold"><div class="lbl">Patrocinios en efectivo</div><div class="val au" id="k3">$0</div><div class="foot" id="k3f">4 confirmados</div></div>
+    <div class="kpi green"><div class="lbl">Punto de equilibrio</div><div class="val" id="k4">0</div><div class="foot" id="k4f">asistentes totales</div></div>
+    <div class="kpi green"><div class="lbl">Margen por boleto extra</div><div class="val pos" id="k5">$0</div><div class="foot" id="k5f">contribución unitaria</div></div>
+  </div>
+
+  <!-- SUPUESTOS -->
+  <section>
+    <div class="shead"><h2>1 · Supuestos editables</h2><span class="tag">Campos amarillos</span>
+      <span class="hint">Todo lo demás se calcula solo</span></div>
+
+    <div class="grid3">
+
+      <div class="panel">
+        <h3>Ingresos — Boletos</h3>
+        <div class="row"><label>Boletos pagados a la fecha<span class="note">62 registros − cortesías</span></label>
+          <input type="number" id="i_pag" value="57" step="1"></div>
+        <div class="row"><label>Ingreso bruto cobrado<span class="note">Hoja Ventas de Evento</span></label>
+          <input type="number" id="i_bruto" value="191235" step="100"></div>
+        <div class="row"><label>Comisión total efectiva<span class="note">Stripe + MSI + IVA sobre comisión</span></label>
+          <input type="number" id="i_com" value="6.16" step="0.01"><span class="suffix">%</span></div>
+        <div class="row"><label>Cortesías otorgadas<span class="note">Cuestan A&amp;B, no generan ingreso</span></label>
+          <input type="number" id="i_cort" value="5" step="1"></div>
+        <div class="row"><label>Precio del boleto incremental<span class="note">$2,805 = $3,300 con cupón 15%</span></label>
+          <input type="number" id="i_precio" value="2805" step="5"></div>
+      </div>
+
+      <div class="panel">
+        <h3>Ingresos — Patrocinios</h3>
+        <div class="row"><label>Humand<span class="note">Sin IVA · por facturar</span></label><input type="number" id="p1" value="31320" step="500"></div>
+        <div class="row"><label>Yuhu<span class="note">Más IVA</span></label><input type="number" id="p2" value="15000" step="500"></div>
+        <div class="row"><label>Eyenovation<span class="note">Más IVA</span></label><input type="number" id="p3" value="35000" step="500"></div>
+        <div class="row"><label>FINSUS<span class="note">Más IVA · Nivel Oro</span></label><input type="number" id="p4" value="50000" step="500"></div>
+        <div class="row"><label>Patrocinios adicionales<span class="note">Pipeline por cerrar</span></label><input type="number" id="p5" value="0" step="500"></div>
+      </div>
+
+      <div class="panel">
+        <h3>Costos</h3>
+        <div class="row"><label>Venue + A&amp;B por persona<span class="note">$324,554 ÷ 200 pax · incluye IVA y 13% servicio</span></label>
+          <input type="number" id="c_pp" value="1622.77" step="1"></div>
+        <div class="row"><label>Propina sobre A&amp;B<span class="note">Variable</span></label>
+          <input type="number" id="c_prop" value="10" step="0.5"><span class="suffix">%</span></div>
+        <div class="row"><label>Kit participante<span class="note">Fijo en hoja Gastos</span></label>
+          <input type="number" id="c_kit" value="35000" step="500"></div>
+        <div class="row"><label>Gafetes<span class="note">Fijo</span></label>
+          <input type="number" id="c_gaf" value="638" step="10"></div>
+        <div class="row"><label>Plataforma WeChamber<span class="note">Fijo · adicional a la comisión por transacción</span></label>
+          <input type="number" id="c_plat" value="9280" step="100"></div>
+        <div class="row"><label>Otros costos FIJOS<span class="note">Audio/video, marketing, speakers, staff…</span></label>
+          <input type="number" id="c_of" value="0" step="1000"></div>
+        <div class="row"><label>Otros costos VARIABLES por persona<span class="note">Estacionamiento, seguro, etc.</span></label>
+          <input type="number" id="c_ov" value="0" step="10"></div>
+      </div>
+
+    </div>
+
+    <div class="alert" id="alertBox">
+      <b>⚠ Lectura crítica del PMO</b>
+      <ul>
+        <li>La hoja <b>Gastos</b> solo trae 4 líneas; ya le agregué la plataforma WeChamber ($9,280). Sigue <b>sin incluir audio/video (~$33,500 cotización Mix Eventos), marketing e impresos, honorarios de speakers, fotógrafo ni staff.</b> El punto de equilibrio real es más alto que el que ves aquí hasta que cargues esos costos en "Otros costos FIJOS".</li>
+        <li>Los <b>62 registros incluyen 5 cortesías</b>, pero el desglose de montos de la hoja de ventas suma exactamente 62 boletos pagados. Vale la pena reconciliarlo con WeChamber antes de presentarlo al comité.</li>
+        <li>3 de 4 patrocinios están cotizados <b>"más IVA"</b>: si cobras el IVA, entran ~$16,000 adicionales de flujo que aquí no están contados.</li>
+        <li><b>Prueba de estrés:</b> si esos costos faltantes suman $120,000, el equilibrio <i>solo con taquilla</i> salta de 34 a <b>176 asistentes</b> y el margen a 200 personas cae de 40% a 23%. Por eso urge cerrar el número real de audio, marketing y speakers.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- P&L -->
+  <section>
+    <div class="shead"><h2>2 · Estado de resultados por escenario</h2>
+      <span class="hint">Pesos mexicanos, flujo con IVA</span></div>
+    <div class="tw">
+      <table>
+        <thead><tr>
+          <th>Concepto</th><th>Hoy</th><th class="hi">150 personas</th><th class="hi">180 personas</th><th class="hi">200 personas</th>
+        </tr></thead>
+        <tbody id="pnlBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- BREAKEVEN -->
+  <section>
+    <div class="shead"><h2>3 · Punto de equilibrio</h2><span class="tag">Break-even</span>
+      <span class="hint">Asistentes totales necesarios para utilidad cero</span></div>
+
+    <div class="beband">
+      <div class="be"><div class="t">Con patrocinios</div><div class="n" id="be1">—</div>
+        <div class="d" id="be1d">asistentes totales</div></div>
+      <div class="be"><div class="t">Solo taquilla (sin patrocinios)</div><div class="n" id="be2">—</div>
+        <div class="d" id="be2d">asistentes totales</div></div>
+      <div class="be"><div class="t">Colchón vs. hoy</div><div class="n" id="be3">—</div>
+        <div class="d" id="be3d">boletos de holgura</div></div>
+      <div class="be"><div class="t">Costo fijo máximo absorbible</div><div class="n" id="be4">—</div>
+        <div class="d">antes de perder dinero a 150 pax</div></div>
+    </div>
+
+    <div class="panel" style="margin-top:18px">
+      <h3>Simulador libre de asistencia</h3>
+      <div class="sl">
+        <span class="slval" id="slv">150</span>
+        <input type="range" id="slider" min="20" max="240" value="150" step="1">
+      </div>
+      <div class="grid3" style="margin-top:18px">
+        <div><div class="t" style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--txt-sec);font-weight:700">Ingreso total</div>
+          <div class="val au" id="s_ing" style="font-family:Montserrat,sans-serif;font-size:26px;font-weight:800">—</div></div>
+        <div><div class="t" style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--txt-sec);font-weight:700">Costo total</div>
+          <div class="val" id="s_cos" style="font-family:Montserrat,sans-serif;font-size:26px;font-weight:800">—</div></div>
+        <div><div class="t" style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--txt-sec);font-weight:700">Utilidad</div>
+          <div class="val" id="s_uti" style="font-family:Montserrat,sans-serif;font-size:26px;font-weight:800">—</div></div>
+      </div>
+      <div class="bar"><i id="s_bar" style="width:0%"></i><b id="s_bart"></b></div>
+      <div style="font-size:11.5px;color:var(--txt-sec);margin-top:7px" id="s_note"></div>
+    </div>
+  </section>
+
+  <!-- CHART -->
+  <section>
+    <div class="shead"><h2>4 · Ingreso vs. costo por escenario</h2>
+      <span class="hint">La brecha entre barras es tu utilidad</span></div>
+    <div class="panel"><svg id="chart" viewBox="0 0 820 330" role="img" aria-label="Comparativo de ingreso y costo"></svg></div>
+  </section>
+
+  <!-- TENDENCIA -->
+  <section id="trendWrap">
+    <div class="shead"><h2>5 · Evolución corte a corte</h2><span class="tag">Supabase</span>
+      <span class="hint">Cada vez que congelas un corte, se agrega un punto</span></div>
+    <div class="panel"><svg id="trend" viewBox="0 0 820 300" role="img" aria-label="Evolución de la utilidad"></svg>
+      <div id="trendNote" style="font-size:11.5px;color:var(--txt-sec);margin-top:8px"></div></div>
+  </section>
+
+  <!-- INSIGHTS -->
+  <section>
+    <div class="shead"><h2 id="hInsight">6 · Qué te dice el modelo</h2></div>
+    <div class="info" id="insight"></div>
+    <div class="btnrow">
+      <button class="g" onclick="reset()">↺ Restaurar valores originales</button>
+      <button onclick="window.print()">⎙ Imprimir / PDF</button>
+    </div>
+  </section>
+
+</div>
+
+<footer><b>P&amp;L 3ER HR TRIBE SUMMIT 2026</b> ::: Grow2GetherMx ::: Desaprende y transfórmate</footer>
+
+<script>
+const DEF={i_pag:57,i_bruto:191235,i_com:6.16,i_cort:5,i_precio:2805,
+ p1:31320,p2:15000,p3:35000,p4:50000,p5:0,
+ c_pp:1622.77,c_prop:10,c_kit:35000,c_gaf:638,c_plat:9280,c_of:0,c_ov:0};
+const ID=Object.keys(DEF);
+const $=i=>document.getElementById(i);
+const V=i=>{const n=parseFloat($(i).value);return isNaN(n)?0:n;};
+const M=n=>'$'+Math.round(n).toLocaleString('es-MX');
+const M0=n=>(n<0?'−$':'$')+Math.abs(Math.round(n)).toLocaleString('es-MX');
+
+function model(){
+  const pag=V('i_pag'), bruto=V('i_bruto'), com=V('i_com')/100, cort=V('i_cort'), precio=V('i_precio');
+  const patro=V('p1')+V('p2')+V('p3')+V('p4')+V('p5');
+  const cv=V('c_pp')*(1+V('c_prop')/100)+V('c_ov');
+  const cf=V('c_kit')+V('c_gaf')+V('c_plat')+V('c_of');
+  const netoUnit=precio*(1-com);
+  const mc=netoUnit-cv;                       // contribución por boleto incremental
+  const realizado=bruto*(1-com);
+  const base=pag+cort;                        // asistentes ya confirmados
+  return {pag,bruto,com,cort,precio,patro,cv,cf,netoUnit,mc,realizado,base,
+    inc:N=>Math.max(0,N-base),
+    ingBol:N=>realizado+Math.max(0,N-base)*netoUnit,
+    ing:N=>realizado+Math.max(0,N-base)*netoUnit+patro,
+    cos:N=>cf+N*cv,
+    uti:N=>realizado+Math.max(0,N-base)*netoUnit+patro-cf-N*cv};
+}
+function breakeven(m,conPatro){
+  const P=conPatro?m.patro:0;
+  if(m.mc<=0){ // sin margen incremental nunca alcanza
+    return (m.realizado+P-m.cf-m.base*m.cv)>=0?m.base:Infinity;
+  }
+  const N=(m.cf+m.base*m.netoUnit-m.realizado-P)/m.mc;
+  return Math.max(0,Math.ceil(N));
+}
+
+const ROWS=[
+ {t:'sec',l:'INGRESOS'},
+ {l:'Boletos — cobrado a la fecha (neto)',f:(m,N)=>m.realizado,d:'Ya en banco'},
+ {l:'Boletos — venta incremental (neto)',f:(m,N)=>Math.max(0,N-m.base)*m.netoUnit,d:'Por vender'},
+ {l:'Patrocinios en efectivo',f:(m,N)=>m.patro,d:'Confirmados'},
+ {t:'tot',l:'INGRESO TOTAL',f:(m,N)=>m.ing(N)},
+ {t:'sec',l:'COSTOS'},
+ {l:'Venue + Alimentos y Bebidas',f:(m,N)=>-N*V('c_pp'),d:'Variable / persona'},
+ {l:'Propina',f:(m,N)=>-N*V('c_pp')*V('c_prop')/100,d:'Variable'},
+ {l:'Otros costos variables',f:(m,N)=>-N*V('c_ov'),d:'Variable'},
+ {l:'Kit participante',f:(m,N)=>-V('c_kit'),d:'Fijo'},
+ {l:'Gafetes',f:(m,N)=>-V('c_gaf'),d:'Fijo'},
+ {l:'Plataforma WeChamber',f:(m,N)=>-V('c_plat'),d:'Fijo'},
+ {l:'Otros costos fijos',f:(m,N)=>-V('c_of'),d:'Fijo'},
+ {t:'tot',l:'COSTO TOTAL',f:(m,N)=>-m.cos(N)},
+ {t:'tot',l:'UTILIDAD DEL EVENTO',f:(m,N)=>m.uti(N),big:1},
+ {t:'pct',l:'Margen sobre ingreso',f:(m,N)=>m.uti(N)/m.ing(N),p:1},
+ {t:'sub',l:'Utilidad por asistente',f:(m,N)=>m.uti(N)/N},
+ {t:'sub',l:'Boletos que faltan por vender',f:(m,N)=>Math.max(0,N-m.base),u:1}
+];
+
+function render(){
+  const m=model();
+  const cols=[m.base,150,180,200];
+
+  // KPIs
+  $('k1').textContent=m.base;
+  $('k1f').textContent=`${m.pag} pagados + ${m.cort} cortesías`;
+  $('k2').textContent=M(m.realizado);
+  $('k3').textContent=M(m.patro);
+  const be1=breakeven(m,true);
+  $('k4').textContent=isFinite(be1)?(be1<=m.base?'✓ Logrado':be1):'—';
+  $('k4f').textContent=isFinite(be1)&&be1<=m.base?`superado con ${m.base} asistentes`:'asistentes totales';
+  $('k5').textContent=M0(m.mc);
+  $('k5').className='val '+(m.mc>=0?'pos':'neg');
+  $('k5f').textContent=`neto ${M(m.netoUnit)} − costo ${M(m.cv)}`;
+
+  // Tabla
+  let h='';
+  ROWS.forEach(r=>{
+    if(r.t==='sec'){h+=`<tr class="sec"><td colspan="5">${r.l}</td></tr>`;return;}
+    h+=`<tr class="${r.t||''}"><td>${r.l}${r.d?` <span class="d">· ${r.d}</span>`:''}</td>`;
+    cols.forEach(N=>{
+      const v=r.f(m,N);
+      let s,c='';
+      if(r.p){s=(v*100).toFixed(1)+'%';}
+      else if(r.u){s=Math.round(v).toLocaleString('es-MX');}
+      else {s=M0(v); if(r.big)c=v>=0?'pos':'neg';}
+      h+=`<td class="${c}">${s}</td>`;
+    });
+    h+='</tr>';
+  });
+  $('pnlBody').innerHTML=h;
+
+  // Break-even
+  const be2=breakeven(m,false);
+  $('be1').textContent=isFinite(be1)?(be1<=m.base?'✓ Logrado':be1):'No alcanza';
+  $('be1').className='n '+(isFinite(be1)&&be1<=200?'pos':'neg');
+  $('be1d').textContent=isFinite(be1)&&be1<=m.base?`ya cubierto con ${m.base} asistentes`:'asistentes totales';
+  $('be2').textContent=isFinite(be2)?(be2<=m.base?'✓ Logrado':be2):'No alcanza';
+  $('be2').className='n '+(isFinite(be2)&&be2<=200?'pos':'neg');
+  $('be2d').textContent=isFinite(be2)&&be2<=m.base?`ya cubierto con ${m.base} asistentes`:'asistentes totales';
+  const col=isFinite(be1)?m.base-be1:-999;
+  $('be3').textContent=(col>=0?'+':'')+col;
+  $('be3').className='n '+(col>=0?'pos':'neg');
+  $('be3d').textContent=col>=0?'boletos por encima del equilibrio':'boletos faltantes para el equilibrio';
+  const maxCF=m.cf+m.uti(150);
+  $('be4').textContent=M(Math.max(0,maxCF));
+  $('be4').className='n au';
+
+  // Simulador
+  const N=parseInt($('slider').value);
+  $('slv').textContent=N;
+  $('s_ing').textContent=M(m.ing(N));
+  $('s_cos').textContent=M(m.cos(N));
+  const u=m.uti(N);
+  $('s_uti').textContent=M0(u);
+  $('s_uti').className='val '+(u>=0?'pos':'neg');
+  const pct=Math.min(100,Math.max(0,m.ing(N)?m.cos(N)/m.ing(N)*100:0));
+  $('s_bar').style.width=pct+'%';
+  $('s_bart').textContent=`Costo = ${pct.toFixed(0)}% del ingreso · margen ${(100-pct).toFixed(0)}%`;
+  $('s_note').textContent=`Con ${N} asistentes necesitas vender ${Math.max(0,N-m.base)} boletos más a ${M(m.precio)} c/u.`;
+
+  chart(m);
+  insight(m,be1,be2);
+}
+
+function chart(m){
+  const S=[{n:m.base,l:'Hoy'},{n:150,l:'150 pax'},{n:180,l:'180 pax'},{n:200,l:'200 pax'}];
+  const W=820,H=330,pL=64,pR=20,pT=28,pB=52;
+  const max=Math.max(...S.map(s=>Math.max(s.n?m.ing(s.n):0,s.n?m.cos(s.n):0)))*1.14||1;
+  const gw=(W-pL-pR)/S.length, bw=Math.min(52,gw*0.3);
+  let g=`<line class="axis" x1="${pL}" y1="${H-pB}" x2="${W-pR}" y2="${H-pB}"/>`;
+  for(let i=1;i<=4;i++){const y=pT+(H-pT-pB)*(1-i/4);
+    g+=`<line class="axis" x1="${pL}" y1="${y}" x2="${W-pR}" y2="${y}" stroke-dasharray="3 5"/>`;
+    g+=`<text class="glab" x="${pL-10}" y="${y+4}" text-anchor="end">$${Math.round(max*i/4/1000)}k</text>`;}
+  S.forEach((s,i)=>{
+    const cx=pL+gw*i+gw/2, ing=m.ing(s.n), cos=m.cos(s.n), uti=ing-cos;
+    const hi=(H-pT-pB)*ing/max, hc=(H-pT-pB)*cos/max;
+    const x1=cx-bw-4, x2=cx+4;
+    g+=`<rect x="${x1}" y="${H-pB-hi}" width="${bw}" height="${hi}" fill="url(#gI)" rx="3"/>`;
+    g+=`<rect x="${x2}" y="${H-pB-hc}" width="${bw}" height="${hc}" fill="url(#gC)" rx="3"/>`;
+    g+=`<text class="gval" x="${x1+bw/2}" y="${H-pB-hi-7}" text-anchor="middle" fill="#3AEBFF">${M(ing/1000)}k</text>`;
+    g+=`<text class="gval" x="${x2+bw/2}" y="${H-pB-hc-7}" text-anchor="middle" fill="#E76F51">${M(cos/1000)}k</text>`;
+    g+=`<text class="glab" x="${cx}" y="${H-pB+19}" text-anchor="middle" fill="#EAF2F8">${s.l}</text>`;
+    g+=`<text class="glab" x="${cx}" y="${H-pB+35}" text-anchor="middle" fill="${uti>=0?'#4CC65C':'#BE2831'}">${M0(uti)}</text>`;
+  });
+  $('chart').innerHTML=`<defs>
+    <linearGradient id="gI" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3AEBFF"/><stop offset="100%" stop-color="#1A8BA8"/></linearGradient>
+    <linearGradient id="gC" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F4A261"/><stop offset="100%" stop-color="#A5202A"/></linearGradient>
+  </defs>${g}
+  <text class="glab" x="${W-pR}" y="14" text-anchor="end">■ Ingreso  ■ Costo  ·  cifra inferior = utilidad</text>`;
+}
+
+function insight(m,be1,be2){
+  const u150=m.uti(150),u180=m.uti(180),u200=m.uti(200);
+  const meta=709920, gap=meta-m.ing(200);
+  const salto=u200-u150;
+  let li=[];
+  li.push(`<li>Tu <b>margen de contribución es ${M0(m.mc)} por boleto extra</b> (neto ${M(m.netoUnit)} menos ${M(m.cv)} de A&amp;B y propina). Cada asistente adicional aporta eso a la utilidad — es la cifra que debe traer en la cabeza el equipo comercial.</li>`);
+  if(be1<=m.base){
+    li.push(`<li><b>Ya cruzaste el punto de equilibrio.</b> Con ${m.base} asistentes y los patrocinios confirmados el evento genera ${M0(m.uti(m.base))}. Sin patrocinios el equilibrio estaba en <b>${be2} asistentes</b>: la taquilla sola ya lo cubre. De aquí en adelante <b>todo boleto es utilidad</b>.</li>`);
+  } else {
+    li.push(`<li>Necesitas <b>${be1} asistentes</b> para no perder dinero (${be2} si los patrocinios no entran). Te faltan <b>${Math.max(0,be1-m.base)} boletos</b>.</li>`);
+  }
+  li.push(`<li>Pasar de <b>150 a 200 personas suma ${M0(salto)}</b> de utilidad (+${((salto/Math.abs(u150||1))*100).toFixed(0)}%). El margen porcentual <i>baja</i> de ${(u150/m.ing(150)*100).toFixed(1)}% a ${(u200/m.ing(200)*100).toFixed(1)}% porque el costo es casi todo variable: no hay economía de escala en A&amp;B, el valor está en el volumen absoluto.</li>`);
+  li.push(`<li><b>Brecha vs. la meta de $709,920:</b> a 200 personas el ingreso proyectado es ${M(m.ing(200))}, ${gap>0?`<b>${M(gap)} por debajo</b> de la meta`:`<b>${M(-gap)} por encima</b> de la meta`}. ${gap>0?`Para cerrarla necesitas ~${M(gap)} más de patrocinio o subir el precio incremental a ${M((meta-m.realizado-m.patro)/(200-m.base)/(1-m.com))}.`:''}</li>`);
+  li.push(`<li><b>La palanca real es el precio, no el volumen.</b> Vender a $2,805 en lugar de $3,300 te cuesta ${M0((3300-m.precio)*(1-m.com)*(200-m.base))} en el escenario de 200 personas. Cerrar el grifo de cupones vale más que 15 boletos extra.</li>`);
+  $('insight').innerHTML='<b>◆ Lectura ejecutiva</b><ul>'+li.join('')+'</ul>';
+}
+
+function reset(){ID.forEach(i=>$(i).value=DEF[i]);$('slider').value=150;render();push();}
+
+/* =====================================================================
+   CAPA SUPABASE  ·  tabla summit_pnl_supuestos (fila id='base')
+   La app SIEMPRE funciona sin conexión; Supabase solo la sincroniza.
+   ===================================================================== */
+const COLMAP={ // input del tablero  ->  columna en Postgres
+  i_pag:'boletos_pagados', i_cort:'cortesias', i_bruto:'ingreso_bruto',
+  i_com:'comision_pct', i_precio:'precio_incremental',
+  p1:'patro_humand', p2:'patro_yuhu', p3:'patro_eyenovation', p4:'patro_finsus', p5:'patro_otros',
+  c_pp:'costo_ayb_pp', c_prop:'propina_pct', c_ov:'costo_var_otros_pp',
+  c_kit:'costo_kit', c_gaf:'costo_gafetes', c_plat:'costo_plataforma', c_of:'costo_fijo_otros'
+};
+const PCT=['i_com','c_prop'];            // el tablero usa 6.16 ; la BD usa 0.0616
+const toDB=(k,v)=>PCT.includes(k)?v/100:v;
+const toUI=(k,v)=>PCT.includes(k)?v*100:v;
+
+let sb=null, applying=false, saveTimer=null, chan=null;
+const LS={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},
+          set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}},
+          del:k=>{try{localStorage.removeItem(k)}catch(e){}}};
+
+function status(cls,html){
+  $('connDot').className='dot '+cls;
+  $('connMsg').innerHTML=html;
+}
+function flag(cls,txt){$('saveFlag').className='saveflag '+cls;$('saveFlag').textContent=txt;
+  if(cls==='ok')setTimeout(()=>{if($('saveFlag').textContent===txt)$('saveFlag').textContent=''},2600);}
+
+async function loadLib(){
+  if(window.supabase) return true;
+  const urls=['https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js',
+              'https://cdnjs.cloudflare.com/ajax/libs/supabase-js/2.45.4/umd/supabase.min.js'];
+  for(const u of urls){
+    try{ await new Promise((ok,no)=>{const s=document.createElement('script');
+      s.src=u;s.onload=ok;s.onerror=no;document.head.appendChild(s);});
+      if(window.supabase) return true;
+    }catch(e){}
+  }
+  return false;
+}
+
+async function connect(silent){
+  const url=$('sbUrl').value.trim().replace(/\/+$/,''), key=$('sbKey').value.trim();
+  if(!url||!key){ if(!silent) status('err','Faltan la <b>URL</b> y la <b>anon key</b>. Las encuentras en Supabase → Project Settings → API.'); return; }
+  status('wait','Conectando…');
+  if(!await loadLib()){ status('err','No pude cargar la librería de Supabase (¿sin internet o CDN bloqueado?). Sigues en modo local.'); return; }
+  try{
+    sb=window.supabase.createClient(url,key,{auth:{persistSession:false}});
+    const {data,error}=await sb.from('summit_pnl_supuestos').select('*').eq('id','base').single();
+    if(error) throw error;
+    LS.set('pnl_sb_url',url); LS.set('pnl_sb_key',key);
+    apply(data);
+    status('on',`<b>Conectado.</b> Leyendo <code>summit_pnl_supuestos</code>. Último cambio por <b>${data.actualizado_por||'—'}</b> el ${new Date(data.actualizado_en).toLocaleString('es-MX')}.`);
+    $('conn').classList.remove('open');
+    subscribe(); loadTrend();
+  }catch(e){
+    sb=null;
+    const m=(e&&e.message)||'error desconocido';
+    status('err',`No se pudo conectar: <b>${m}</b>. ${/relation|does not exist|schema/i.test(m)?'Ejecuta primero <code>schema_pnl.sql</code> en el SQL Editor.':'Revisa la URL y la anon key.'} Sigues en modo local.`);
+  }
+}
+function disconnect(){
+  if(chan){try{sb.removeChannel(chan)}catch(e){} chan=null;}
+  sb=null; LS.del('pnl_sb_url'); LS.del('pnl_sb_key');
+  $('trendWrap').classList.remove('on');
+  status('','<b>Modo local.</b> Los cambios viven solo en este navegador.');
+}
+function apply(row){
+  applying=true;
+  Object.entries(COLMAP).forEach(([k,c])=>{ if(row[c]!==null&&row[c]!==undefined) $(k).value=toUI(k,Number(row[c])); });
+  applying=false; render();
+}
+function subscribe(){
+  if(!sb) return;
+  if(chan){try{sb.removeChannel(chan)}catch(e){}}
+  chan=sb.channel('pnl-live').on('postgres_changes',
+    {event:'UPDATE',schema:'public',table:'summit_pnl_supuestos',filter:'id=eq.base'},
+    p=>{ apply(p.new); flag('ok','↻ actualizado por '+(p.new.actualizado_por||'otro usuario')); }
+  ).subscribe();
+}
+function push(){
+  if(!sb||applying) return;
+  clearTimeout(saveTimer);
+  flag('busy','guardando…');
+  saveTimer=setTimeout(async()=>{
+    const row={actualizado_por:(LS.get('pnl_user')||'PMO')};
+    Object.entries(COLMAP).forEach(([k,c])=>row[c]=toDB(k,V(k)));
+    const {error}=await sb.from('summit_pnl_supuestos').update(row).eq('id','base');
+    flag(error?'bad':'ok', error?('no se guardó: '+error.message):'guardado ✓');
+  },700);
+}
+async function snapshot(){
+  if(!sb){ status('err','Conecta Supabase primero: el histórico de cortes vive en la base, no en el navegador.');
+           $('conn').classList.add('open'); return; }
+  flag('busy','congelando corte…');
+  const {data,error}=await sb.rpc('summit_pnl_snapshot',{p_nota:'Corte desde el tablero'});
+  if(error){ flag('bad','error: '+error.message); return; }
+  flag('ok',`corte guardado (${data} escenarios) ✓`);
+  loadTrend();
+}
+async function loadTrend(){
+  if(!sb) return;
+  const {data,error}=await sb.from('summit_pnl_snapshots')
+    .select('corte,escenario,asistentes,utilidad,ingreso_total')
+    .in('escenario',['Hoy']).order('corte',{ascending:true});
+  if(error||!data||data.length<1){ $('trendWrap').classList.remove('on'); return; }
+  $('trendWrap').classList.add('on'); drawTrend(data);
+}
+function drawTrend(d){
+  const W=820,H=300,pL=70,pR=20,pT=24,pB=46;
+  const max=Math.max(...d.map(r=>Number(r.utilidad)),1)*1.15;
+  const min=Math.min(0,...d.map(r=>Number(r.utilidad)));
+  const x=i=>d.length<2?pL+(W-pL-pR)/2:pL+(W-pL-pR)*i/(d.length-1);
+  const y=v=>pT+(H-pT-pB)*(1-(v-min)/(max-min||1));
+  let g='';
+  for(let i=0;i<=4;i++){const yy=pT+(H-pT-pB)*(1-i/4), vv=min+(max-min)*i/4;
+    g+=`<line class="axis" x1="${pL}" y1="${yy}" x2="${W-pR}" y2="${yy}" stroke-dasharray="3 5"/>`;
+    g+=`<text class="glab" x="${pL-10}" y="${yy+4}" text-anchor="end">$${Math.round(vv/1000)}k</text>`;}
+  const pts=d.map((r,i)=>`${x(i)},${y(Number(r.utilidad))}`).join(' ');
+  g+=`<polyline points="${pts}" fill="none" stroke="#3AEBFF" stroke-width="2.5" stroke-linejoin="round"/>`;
+  d.forEach((r,i)=>{
+    g+=`<circle cx="${x(i)}" cy="${y(Number(r.utilidad))}" r="5" fill="#041328" stroke="#D4A93C" stroke-width="2.5"/>`;
+    g+=`<text class="gval" x="${x(i)}" y="${y(Number(r.utilidad))-13}" text-anchor="middle">${M(r.utilidad)}</text>`;
+    g+=`<text class="glab" x="${x(i)}" y="${H-pB+18}" text-anchor="middle">${r.corte.slice(5)}</text>`;
+    g+=`<text class="glab" x="${x(i)}" y="${H-pB+33}" text-anchor="middle" fill="#8FA6BC">${r.asistentes} pax</text>`;
+  });
+  $('trend').innerHTML=g+`<text class="glab" x="${W-pR}" y="14" text-anchor="end">Utilidad con la asistencia real de cada corte</text>`;
+  const f=d[0],l=d[d.length-1];
+  $('trendNote').textContent=d.length<2
+    ? 'Un solo corte registrado. Congela un corte cada semana para ver la tendencia.'
+    : `De ${f.corte} a ${l.corte}: ${l.asistentes-f.asistentes>=0?'+':''}${l.asistentes-f.asistentes} asistentes y ${M0(Number(l.utilidad)-Number(f.utilidad))} de utilidad.`;
+}
+
+ID.forEach(i=>$(i).addEventListener('input',()=>{render();push();}));
+$('slider').addEventListener('input',render);
+render();
+
+// autoconexión si ya guardaste credenciales en este navegador
+(function(){
+  const u=LS.get('pnl_sb_url'), k=LS.get('pnl_sb_key');
+  if(u&&k){ $('sbUrl').value=u; $('sbKey').value=k; connect(true); }
+})();
+</script>
+</body>
+</html>
