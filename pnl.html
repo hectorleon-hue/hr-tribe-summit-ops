@@ -246,7 +246,7 @@ button.gh{border-color:var(--verde-b);color:var(--verde-b)} button.gh:hover{back
           <input type="number" id="c_gaf" value="638" step="10"></div>
         <div class="row"><label>Plataforma WeChamber<span class="note">Fijo · adicional a la comisión por transacción</span></label>
           <input type="number" id="c_plat" value="9280" step="100"></div>
-        <div class="row"><label>Otros costos FIJOS<span class="note">Audio/video, marketing, speakers, staff…</span></label>
+        <div class="row"><label>Marketing, publicidad y otros fijos<span class="note">⬅ Aquí va el costo de marketing en cuanto lo pasen. Audio/video ya está patrocinado (My MOTTION).</span></label>
           <input type="number" id="c_of" value="0" step="1000"></div>
         <div class="row"><label>Otros costos VARIABLES por persona<span class="note">Estacionamiento, seguro, etc.</span></label>
           <input type="number" id="c_ov" value="0" step="10"></div>
@@ -255,12 +255,12 @@ button.gh{border-color:var(--verde-b);color:var(--verde-b)} button.gh:hover{back
     </div>
 
     <div class="alert" id="alertBox">
-      <b>⚠ Lectura crítica del PMO</b>
+      <b>⚠ Lo único que le falta a este P&amp;L</b>
       <ul>
-        <li>La hoja <b>Gastos</b> solo trae 4 líneas; ya le agregué la plataforma WeChamber ($9,280). Sigue <b>sin incluir audio/video (~$33,500 cotización Mix Eventos), marketing e impresos, honorarios de speakers, fotógrafo ni staff.</b> El punto de equilibrio real es más alto que el que ves aquí hasta que cargues esos costos en "Otros costos FIJOS".</li>
+        <li><b>Marketing y publicidad es el hueco abierto.</b> Es el único rubro relevante sin número: el proveedor aún no lo pasa. En cuanto llegue, va en "Otros costos FIJOS" y el modelo queda cerrado. Mientras tanto, cada $10,000 de marketing te cuesta ~12 boletos de equilibrio.</li>
+        <li><b>Audio y video NO son gasto:</b> los patrocina <b>My MOTTION</b> (audio/video/CCTV). Lo mismo el <b>café (Kali)</b>, el <b>fotógrafo (Great Place to Work)</b> y la <b>cerveza (Rrey)</b>. Por eso no aparecen como costo: son patrocinio en especie, no omisión.</li>
         <li>Los <b>62 registros incluyen 5 cortesías</b>, pero el desglose de montos de la hoja de ventas suma exactamente 62 boletos pagados. Vale la pena reconciliarlo con WeChamber antes de presentarlo al comité.</li>
         <li>3 de 4 patrocinios están cotizados <b>"más IVA"</b>: si cobras el IVA, entran ~$16,000 adicionales de flujo que aquí no están contados.</li>
-        <li><b>Prueba de estrés:</b> si esos costos faltantes suman $120,000, el equilibrio <i>solo con taquilla</i> salta de 34 a <b>176 asistentes</b> y el margen a 200 personas cae de 40% a 23%. Por eso urge cerrar el número real de audio, marketing y speakers.</li>
       </ul>
     </div>
   </section>
@@ -391,7 +391,7 @@ const ROWS=[
  {l:'Kit participante',f:(m,N)=>-V('c_kit'),d:'Fijo'},
  {l:'Gafetes',f:(m,N)=>-V('c_gaf'),d:'Fijo'},
  {l:'Plataforma WeChamber',f:(m,N)=>-V('c_plat'),d:'Fijo'},
- {l:'Otros costos fijos',f:(m,N)=>-V('c_of'),d:'Fijo'},
+ {l:'Marketing, publicidad y otros fijos',f:(m,N)=>-V('c_of'),d:'Fijo · pendiente de cifra'},
  {t:'tot',l:'COSTO TOTAL',f:(m,N)=>-m.cos(N)},
  {t:'tot',l:'UTILIDAD DEL EVENTO',f:(m,N)=>m.uti(N),big:1},
  {t:'pct',l:'Margen sobre ingreso',f:(m,N)=>m.uti(N)/m.ing(N),p:1},
@@ -505,6 +505,7 @@ function insight(m,be1,be2){
   }
   li.push(`<li>Pasar de <b>150 a 200 personas suma ${M0(salto)}</b> de utilidad (+${((salto/Math.abs(u150||1))*100).toFixed(0)}%). El margen porcentual <i>baja</i> de ${(u150/m.ing(150)*100).toFixed(1)}% a ${(u200/m.ing(200)*100).toFixed(1)}% porque el costo es casi todo variable: no hay economía de escala en A&amp;B, el valor está en el volumen absoluto.</li>`);
   li.push(`<li><b>Brecha vs. la meta de $709,920:</b> a 200 personas el ingreso proyectado es ${M(m.ing(200))}, ${gap>0?`<b>${M(gap)} por debajo</b> de la meta`:`<b>${M(-gap)} por encima</b> de la meta`}. ${gap>0?`Para cerrarla necesitas ~${M(gap)} más de patrocinio o subir el precio incremental a ${M((meta-m.realizado-m.patro)/(200-m.base)/(1-m.com))}.`:''}</li>`);
+  li.push(`<li><b>Techo para marketing:</b> a 150 personas puedes gastar hasta <b>${M(Math.max(0,m.cf+u150))}</b> en costos fijos totales antes de perder dinero. Descontando lo ya comprometido (${M(m.cf)}), te quedan <b>${M(Math.max(0,u150))}</b> de espacio para marketing y publicidad. Es el número que le puedes dar al proveedor como tope antes de que te pase su cotización.</li>`);
   li.push(`<li><b>La palanca real es el precio, no el volumen.</b> Vender a $2,805 en lugar de $3,300 te cuesta ${M0((3300-m.precio)*(1-m.com)*(200-m.base))} en el escenario de 200 personas. Cerrar el grifo de cupones vale más que 15 boletos extra.</li>`);
   $('insight').innerHTML='<b>◆ Lectura ejecutiva</b><ul>'+li.join('')+'</ul>';
 }
@@ -514,7 +515,16 @@ function reset(){ID.forEach(i=>$(i).value=DEF[i]);$('slider').value=150;render()
 /* =====================================================================
    CAPA SUPABASE  ·  tabla summit_pnl_supuestos (fila id='base')
    La app SIEMPRE funciona sin conexión; Supabase solo la sincroniza.
+
+   Credenciales del proyecto (las mismas que usa index.html).
+   Son la URL publica y la llave PUBLISHABLE / anon: estan disenadas
+   para ir en el navegador y quien protege los datos es la RLS,
+   no el secreto de la llave. Nunca pongas aqui la service_role.
+   Se pueden sobrescribir desde el panel "Conexion" sin tocar el codigo.
    ===================================================================== */
+const SUPABASE_URL      = 'https://istfqqmuxcuhduakrojo.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_SDwAlte5rgolpf6Or2d1WQ_0w6DpjSF';
+
 const COLMAP={ // input del tablero  ->  columna en Postgres
   i_pag:'boletos_pagados', i_cort:'cortesias', i_bruto:'ingreso_bruto',
   i_com:'comision_pct', i_precio:'precio_incremental',
@@ -647,9 +657,9 @@ ID.forEach(i=>$(i).addEventListener('input',()=>{render();push();}));
 $('slider').addEventListener('input',render);
 render();
 
-// autoconexión si ya guardaste credenciales en este navegador
+// autoconexión: primero lo que hayas guardado en este navegador, si no las constantes de arriba
 (function(){
-  const u=LS.get('pnl_sb_url'), k=LS.get('pnl_sb_key');
+  const u=LS.get('pnl_sb_url')||SUPABASE_URL, k=LS.get('pnl_sb_key')||SUPABASE_ANON_KEY;
   if(u&&k){ $('sbUrl').value=u; $('sbKey').value=k; connect(true); }
 })();
 </script>
