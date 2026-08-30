@@ -250,6 +250,14 @@ footer b{color:var(--oro)}
         <div class="row"><label>Papelería</label><input type="number" id="g_pap" value="2251.40" step="50"></div>
         <div class="row"><label>Manteles</label><input type="number" id="g_man" value="1920" step="50"></div>
         <div class="row"><label>Gafetes<span class="note">$522 + $638</span></label><input type="number" id="g_gaf" value="1160" step="50"></div>
+        <div class="row"><label>Toffee</label><input type="number" id="g_tof" value="3390" step="50"></div>
+        <div class="row"><label>Mariel Esquivel</label><input type="number" id="g_mar" value="5000" step="50"></div>
+        <div class="row"><label>Ale Flores</label><input type="number" id="g_ale" value="229.90" step="10"></div>
+        <div class="row"><label>Plan web Core<span class="note">Cargo del día, ya prorrateado y con descuento</span></label><input type="number" id="g_web" value="1217.74" step="10"></div>
+        <div class="row" style="border-top:1px solid var(--line);margin-top:6px;padding-top:9px">
+          <label style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:12px;letter-spacing:.02em">Total de gastos fuera de A&amp;B
+            <span class="note">Incluye vinos, botanas y comida del comité</span></label>
+          <span id="g_tot" style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:15px;color:var(--oro-soft)">—</span></div>
       </div>
 
       <div class="panel" style="border-left:3px solid var(--oro)">
@@ -377,12 +385,9 @@ footer b{color:var(--oro)}
 var DEF={i_bol:114,i_bruto:345735,i_com:21259.65,i_pax:150,i_brindis:80,
  p1:31320,p2:15000,p3:35000,p4:50000,p_cob:131320,
  c_pp:1622.77,c_prop:10,c_vino:12352.50,c_bot:800,c_com:3090,
- g_kit:35000,g_wch:9280,g_pap:2251.40,g_man:1920,g_gaf:1160};
+ g_kit:35000,g_wch:9280,g_pap:2251.40,g_man:1920,g_gaf:1160,g_tof:3390,g_mar:5000,g_ale:229.90,g_web:1217.74};
 
-var EXTRA_DEF=[
- {n:'Marketing y publicidad',v:0},
- {n:'Por definir',v:0},
- {n:'',v:0}];
+var EXTRA_DEF=[{n:'',v:0},{n:'',v:0}];
 
 var $=function(i){return document.getElementById(i);};
 var V=function(i){var n=parseFloat($(i).value);return isNaN(n)?0:n;};
@@ -420,7 +425,7 @@ function model(){
   var ing=neto+patro;
   var ab=V('c_pp')*pax, prop=ab*V('c_prop')/100;
   var casino=V('c_vino')+V('c_bot')+V('c_com');
-  var fijos=V('g_kit')+V('g_wch')+V('g_pap')+V('g_man')+V('g_gaf');
+  var fijos=V('g_kit')+V('g_wch')+V('g_pap')+V('g_man')+V('g_gaf')+V('g_tof')+V('g_mar')+V('g_ale')+V('g_web');
   var extra=extraTotal();
   var cos=ab+prop+casino+fijos+extra;
   var uti=ing-cos;
@@ -446,6 +451,8 @@ var ROWS=[
  {l:'Kit del participante',f:function(){return -V('g_kit');},d:'Fijo'},
  {l:'Plataforma WeChamber',f:function(){return -V('g_wch');},d:'Fijo'},
  {l:'Papelería, manteles y gafetes',f:function(){return -(V('g_pap')+V('g_man')+V('g_gaf'));},d:'Fijo'},
+ {l:'Otros proveedores',f:function(){return -(V('g_tof')+V('g_mar')+V('g_ale'));},d:'Toffee, Mariel Esquivel, Ale Flores'},
+ {l:'Plan web Core',f:function(){return -V('g_web');},d:'Cargo prorrateado del día'},
  {l:'Gastos adicionales',f:function(m){return -m.extra;},d:'Por definir',dim:1},
  {t:'tot',l:'COSTO TOTAL',f:function(m){return -m.cos;}},
  {t:'fin',l:'UTILIDAD DEL EVENTO',f:function(m){return m.uti;}},
@@ -478,6 +485,7 @@ function render(){
     $('k5').closest('.kpi').className='kpi green';
   }
   $('extraTot').textContent='Subtotal adicional: '+M2(m.extra);
+  $('g_tot').textContent=M2(m.casino+m.fijos+m.extra);
 
   /* tabla */
   var h='';
