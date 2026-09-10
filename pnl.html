@@ -51,6 +51,15 @@ header h1 span{color:var(--oro)}
 .chip.warn{color:var(--oro-soft);border-color:rgba(212,169,60,.45);background:rgba(212,169,60,.10)}
 .chip.bad{color:var(--rojo);border-color:rgba(224,85,94,.45);background:rgba(224,85,94,.10)}
 
+
+.brand{display:flex;align-items:center;gap:12px;flex:none}
+.brand img{width:76px;height:76px;border-radius:50%;box-shadow:0 0 0 2px var(--cian),0 0 22px rgba(51,180,210,.45)}
+.brand .pw{font-family:'Montserrat',sans-serif;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--txt-sec);font-weight:700;line-height:1.5}
+.brand .pw b{display:block;color:var(--oro);font-size:12px;letter-spacing:.08em}
+.hright{display:flex;align-items:flex-start;gap:26px;flex:none}
+.hgrid>div:first-child{flex:1 1 420px;min-width:0}
+@media(max-width:880px){.hright{flex-direction:row-reverse;justify-content:flex-end}}
+
 /* ---------- KPI ---------- */
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:13px;margin:24px 0 0}
 .kpi{background:var(--surf);border:1px solid var(--line);border-top:3px solid var(--cian);
@@ -177,12 +186,15 @@ footer b{color:var(--oro)}
     <div>
       <div class="kicker">Grow2GetherMx · HR Tribe · PMO</div>
       <h1>Cierre financiero — <span>3er HR Tribe Summit</span></h1>
-      <p class="sub">Club Casino Monterrey · 26 de agosto 2026 · Modelo de flujo con IVA.
-      Cifras reales de taquilla, patrocinios y gastos ejercidos. Los campos amarillos son editables: todo recalcula al instante.</p>
+      <p class="sub">Club Casino Monterrey · 26 de agosto 2026 · Cierre definitivo con IVA.
+      Cifras reales de taquilla, patrocinios (pagados directo al Casino) y todos los gastos ejercidos. Los campos amarillos son editables: todo recalcula al instante.</p>
     </div>
+    <div class="hright">
     <div class="stamp">
-      Corte<b id="hoy">27 AGO 2026</b>
-      80 transacciones · 114 boletos<br>150 asistentes · 80 al brindis
+      Corte<b id="hoy">10 SEP 2026</b>
+      81 transacciones · 115 boletos<br>174 personas en sala
+    </div>
+    <div class="brand"><img src="data:image/png;base64,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" alt="Grow2GetherMx · HR Consulting"><div class="pw">Powered by<b>G2G</b>Grow2GetherMx</div></div>
     </div>
   </div>
   <div class="wrap">
@@ -190,7 +202,7 @@ footer b{color:var(--oro)}
       <div class="kpi"><div class="lbl">Ingreso total</div><div class="val ac" id="k1">—</div><div class="foot">Taquilla neta + patrocinios</div></div>
       <div class="kpi red"><div class="lbl">Costo total</div><div class="val" id="k2">—</div><div class="foot" id="k2f">A&amp;B + gastos ejercidos</div></div>
       <div class="kpi gold"><div class="lbl">Utilidad del evento</div><div class="val au" id="k3">—</div><div class="foot" id="k3f">margen sobre ingreso</div></div>
-      <div class="kpi green"><div class="lbl">Utilidad por asistente</div><div class="val pos" id="k4">—</div><div class="foot">sobre 150 personas</div></div>
+      <div class="kpi green"><div class="lbl">Utilidad por asistente</div><div class="val pos" id="k4">—</div><div class="foot">sobre 174 personas en sala</div></div>
       <div class="kpi green"><div class="lbl" id="k5l">Patrocinios cobrados</div><div class="val pos" id="k5">—</div><div class="foot" id="k5f">—</div></div>
     </div>
   </div>
@@ -206,33 +218,31 @@ footer b{color:var(--oro)}
     <div class="grid3">
       <div class="panel">
         <h3>Taquilla <small>WeChamber</small></h3>
-        <div class="row"><label>Boletos vendidos<span class="note">80 transacciones · incluye acompañantes</span></label>
-          <input type="number" id="i_bol" value="114" step="1"></div>
+        <div class="row"><label>Boletos vendidos<span class="note">81 transacciones · incluye acompañantes</span></label>
+          <input type="number" id="i_bol" value="115" step="1"></div>
         <div class="row"><label>Ingreso bruto cobrado<span class="note">Suma de la hoja Ventas de Evento</span></label>
-          <input type="number" id="i_bruto" value="345735" step="100"></div>
+          <input type="number" id="i_bruto" value="349050" step="100"></div>
         <div class="row"><label>Comisiones de cobro<span class="note">Stripe + MSI + IVA sobre comisión</span></label>
-          <input type="number" id="i_com" value="21259.65" step="10"></div>
-        <div class="row"><label>Asistentes con alimentos<span class="note">Base del costo variable de A&amp;B</span></label>
-          <input type="number" id="i_pax" value="150" step="1"></div>
-        <div class="row"><label>Asistentes al brindis<span class="note">FuckUp Nights · ya dentro del paquete de A&amp;B</span></label>
-          <input type="number" id="i_brindis" value="80" step="1"></div>
+          <input type="number" id="i_com" value="21401.56" step="10"></div>
+        <div class="row"><label>Personas en sala<span class="note">Base de la columna "por asistente"</span></label>
+          <input type="number" id="i_pax" value="174" step="1"></div>
       </div>
 
       <div class="panel">
-        <h3>Patrocinios en efectivo <small id="patroEstado">4 de 4 pagados</small></h3>
-        <div class="row"><label>Humand<span class="note">Monto sin IVA · <b style="color:var(--verde)">pagado</b></span></label><input type="number" id="p1" value="31320" step="500"></div>
-        <div class="row"><label>Yuhu<span class="note">Más IVA · <b style="color:var(--verde)">pagado</b></span></label><input type="number" id="p2" value="15000" step="500"></div>
-        <div class="row"><label>Eyenovation<span class="note">Más IVA · <b style="color:var(--verde)">pagado</b></span></label><input type="number" id="p3" value="35000" step="500"></div>
-        <div class="row"><label>FINSUS<span class="note">Más IVA · <b style="color:var(--verde)">pagado</b> · Nivel Oro</span></label><input type="number" id="p4" value="50000" step="500"></div>
-        <div class="row"><label>Patrocinios ya cobrados<span class="note">Cuánto de lo anterior está en banco</span></label><input type="number" id="p_cob" value="131320" step="500"></div>
+        <h3>Patrocinios en efectivo <small id="patroEstado">pagados directo al Casino</small></h3>
+        <div class="row"><label>Humand<span class="note">Sin IVA · <b style="color:var(--verde)">pagado</b></span></label><input type="number" id="p1" value="31320" step="500"></div>
+        <div class="row"><label>Yuhu<span class="note">$15,000 + IVA · <b style="color:var(--verde)">pagado</b></span></label><input type="number" id="p2" value="17400" step="500"></div>
+        <div class="row"><label>Eyenovation<span class="note">$35,000 + IVA · <b style="color:var(--verde)">pagado</b></span></label><input type="number" id="p3" value="40600" step="500"></div>
+        <div class="row"><label>FINSUS<span class="note">$50,000 + IVA · <b style="color:var(--verde)">pagado</b> · Nivel Oro</span></label><input type="number" id="p4" value="58000" step="500"></div>
+        <div class="row"><label>Pagado directo al Casino<span class="note">Los patrocinadores liquidaron su parte contra el Casino, no a la cuenta de HR Tribe</span></label><input type="number" id="p_cob" value="147320" step="500"></div>
       </div>
 
       <div class="panel">
         <h3>Venue y alimentos <small>Club Casino</small></h3>
-        <div class="row"><label>Costo de A&amp;B por persona<span class="note">Incluye IVA, 15% de servicio y mantenimiento</span></label>
-          <input type="number" id="c_pp" value="1622.77" step="1"></div>
-        <div class="row"><label>Propina<span class="note">Sobre el consumo de A&amp;B</span></label>
-          <input type="number" id="c_prop" value="10" step="0.5"><span class="suffix">%</span></div>
+        <div class="row"><label>Costo total del Casino<span class="note">Venue + A&amp;B + servicio, factura final</span></label>
+          <input type="number" id="c_tot" value="215297.43" step="100"></div>
+        <div class="row"><label>Transferido desde la cuenta HR Tribe<span class="note">Saldo remanente = total − lo que pagaron los patrocinadores</span></label>
+          <span id="c_sal" style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:14px;color:var(--oro-soft)">—</span></div>
         <div class="row"><label>Vinos del brindis<span class="note">Cargo directo del Casino</span></label>
           <input type="number" id="c_vino" value="12352.50" step="50"></div>
         <div class="row"><label>Botanas<span class="note">Cargo directo del Casino</span></label>
@@ -246,16 +256,17 @@ footer b{color:var(--oro)}
       <div class="panel">
         <h3>Gastos ejercidos <small>facturas en mano</small></h3>
         <div class="row"><label>Kit del participante</label><input type="number" id="g_kit" value="35000" step="500"></div>
-        <div class="row"><label>Plataforma WeChamber<span class="note">2 cargos de $4,640</span></label><input type="number" id="g_wch" value="9280" step="100"></div>
+        <div class="row"><label>Plataforma WeChamber<span class="note">3 cargos de $4,640</span></label><input type="number" id="g_wch" value="13920" step="100"></div>
         <div class="row"><label>Papelería</label><input type="number" id="g_pap" value="2251.40" step="50"></div>
         <div class="row"><label>Manteles</label><input type="number" id="g_man" value="1920" step="50"></div>
         <div class="row"><label>Gafetes<span class="note">$522 + $638</span></label><input type="number" id="g_gaf" value="1160" step="50"></div>
         <div class="row"><label>Toffee</label><input type="number" id="g_tof" value="3390" step="50"></div>
-        <div class="row"><label>Mariel Esquivel</label><input type="number" id="g_mar" value="5000" step="50"></div>
+        <div class="row"><label>Amazon Gift Card</label><input type="number" id="g_amz" value="5000" step="50"></div>
+        <div class="row"><label>Parrillero · carne asada</label><input type="number" id="g_par" value="5000" step="50"></div>
         <div class="row"><label>Ale Flores</label><input type="number" id="g_ale" value="229.90" step="10"></div>
-        <div class="row"><label>Plan web Core<span class="note">Cargo del día, ya prorrateado y con descuento</span></label><input type="number" id="g_web" value="1217.74" step="10"></div>
+        <div class="row"><label>Squarespace<span class="note">Plan web, cargo prorrateado con descuento</span></label><input type="number" id="g_web" value="1217.74" step="10"></div>
         <div class="row" style="border-top:1px solid var(--line);margin-top:6px;padding-top:9px">
-          <label style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:12px;letter-spacing:.02em">Total de gastos fuera de A&amp;B
+          <label style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:12px;letter-spacing:.02em">Total de gastos fuera del Casino
             <span class="note">Incluye vinos, botanas y comida del comité</span></label>
           <span id="g_tot" style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:15px;color:var(--oro-soft)">—</span></div>
       </div>
@@ -298,8 +309,8 @@ footer b{color:var(--oro)}
     <div class="strip">
       <div class="card"><div class="t">Gasto adicional máximo</div><div class="n au" id="c1">—</div>
         <div class="d">es lo que puede aparecer todavía en facturas antes de llegar a utilidad cero</div></div>
-      <div class="card" style="border-top-color:var(--cian)"><div class="t">Margen de contribución por boleto</div><div class="n ac" id="c2">—</div>
-        <div class="d" id="c2d">precio neto promedio menos el costo de A&amp;B de esa persona</div></div>
+      <div class="card" style="border-top-color:var(--cian)"><div class="t">Ingreso neto por boleto</div><div class="n ac" id="c2">—</div>
+        <div class="d" id="c2d">ticket neto promedio</div></div>
       <div class="card" style="border-top-color:var(--verde)"><div class="t">Boletos para no perder</div><div class="n pos" id="c3">—</div>
         <div class="d" id="c3d">asistentes que se necesitaban para no perder</div></div>
       <div class="card" style="border-top-color:var(--verde)"><div class="t" id="c4t">Utilidad ya en banco</div><div class="n" id="c4">—</div>
@@ -315,13 +326,13 @@ footer b{color:var(--oro)}
   <!-- 5 · TAQUILLA -->
   <section>
     <div class="shead"><span class="n">05</span><h2>Anatomía de la venta</h2>
-      <span class="hint">114 boletos en 80 transacciones · junio a agosto</span></div>
+      <span class="hint">115 boletos en 81 transacciones · junio a agosto (+1 el 28 ago)</span></div>
     <div class="grid2">
       <div class="panel">
         <h3>Curva de venta <small>boletos acumulados</small></h3>
         <svg id="curva" viewBox="0 0 520 250" role="img" aria-label="Curva acumulada de venta de boletos"></svg>
         <p style="font-size:11.5px;color:var(--txt-dim);margin-top:10px">
-          <b style="color:var(--oro-soft)">71 de 114 boletos — el 62%</b> se vendieron entre el 19 y el 26 de agosto.
+          <b style="color:var(--oro-soft)">71 de 115 boletos — el 62%</b> se vendieron entre el 19 y el 26 de agosto.
           La venta no despegó hasta que el comité empujó por WhatsApp la última semana.</p>
       </div>
       <div class="panel">
@@ -332,18 +343,18 @@ footer b{color:var(--oro)}
           <tbody>
             <tr><td>Lista, sin cupón</td><td class="n">52</td><td class="n">$172,800</td><td class="n">$3,323</td></tr>
             <tr><td>Family &amp; Friends −15%</td><td class="n">39</td><td class="n">$112,455</td><td class="n">$2,883</td></tr>
-            <tr><td>Partners −15/20%</td><td class="n">10</td><td class="n">$30,090</td><td class="n">$3,009</td></tr>
+            <tr><td>Partners −15/20%</td><td class="n">11</td><td class="n">$33,405</td><td class="n">$3,037</td></tr>
             <tr><td>Speakers y acompañantes</td><td class="n">6</td><td class="n">$16,485</td><td class="n">$2,748</td></tr>
             <tr><td>Kali −50%</td><td class="n">4</td><td class="n">$7,800</td><td class="n">$1,950</td></tr>
             <tr><td>Conalep, comité, Fitzer</td><td class="n">3</td><td class="n">$6,105</td><td class="n">$2,035</td></tr>
-            <tr class="tot"><td>Total</td><td class="n">114</td><td class="n">$345,735</td><td class="n">$3,033</td></tr>
+            <tr class="tot"><td>Total</td><td class="n">115</td><td class="n">$349,050</td><td class="n">$3,035</td></tr>
           </tbody>
         </table>
         </div>
         <p style="font-size:11.5px;color:var(--txt-dim);margin-top:12px">
-          Valor de lista de esos 114 boletos: <b style="color:var(--txt)">$387,000</b>.
-          Se otorgaron <b style="color:var(--oro-soft)">$41,265 en cupones</b>, el 10.7%.
-          29 boletos (25%) se pagaron a meses sin intereses — ahí se va la comisión más cara.</p>
+          Valor de lista de esos 115 boletos: <b style="color:var(--txt)">$390,900</b>.
+          Se otorgaron <b style="color:var(--oro-soft)">$41,850 en cupones</b>, el 10.7%.
+          30 boletos (26%) se pagaron a meses sin intereses — ahí se va la comisión más cara.</p>
       </div>
     </div>
   </section>
@@ -353,17 +364,18 @@ footer b{color:var(--oro)}
     <div class="shead"><span class="n">06</span><h2>Lectura del PMO</h2></div>
     <div class="grid2">
       <div class="note-box nb-gold" style="margin-top:0">
-        <h4>Los patrocinios en especie fueron el verdadero margen</h4>
+        <h4>Cómo se pagó el Casino</h4>
         <ul>
-          <li><b>My MOTTION</b> cubrió audio, video y CCTV: la cotización más barata era de <b>$33,500</b>. Ese gasto nunca se ejerció.</li>
-          <li><b>Hotel Presidente</b> ($150,000 por intercambio), <b>Kali</b> (café), <b>Great Place to Work</b> (fotógrafo), <b>Cerveza Rrey</b> y <b>Fitzer</b> completan el bloque.</li>
-          <li>Sin ese bloque, esta utilidad sería <b>negativa</b>. Vale la pena ponerle número formal al costo evitado y presentarlo así al comité: es el activo comercial más fuerte de HR Tribe.</li>
+          <li>Factura final del Club Casino Monterrey: <b>$215,297.43</b>, muy por debajo de los $267,757 que estimaba el modelo (150 pax a $1,622.77 + propina).</li>
+          <li>Los cuatro patrocinadores pagaron <b>$147,320 directo al Casino</b> (68% de la factura). HR Tribe transfirió el remanente de <b>$67,977.43</b>.</li>
+          <li>Por eso la caja de HR Tribe solo vio la taquilla neta como entrada y $153,309 de salidas. La utilidad de $174,339 es el saldo real de la cuenta.</li>
+          <li>Los patrocinios en especie (<b>My MOTTION</b> audio y video, <b>Hotel Presidente</b>, <b>Kali</b>, <b>Great Place to Work</b>, <b>Cerveza Rrey</b>, <b>Fitzer</b>) siguen siendo ~$183,500 de costo evitado que no aparece aquí.</li>
         </ul>
       </div>
       <div class="note-box nb-cian" style="margin-top:0">
         <h4>Tres decisiones que quedan pendientes</h4>
         <ul>
-          <li><b>Cobrar el IVA</b> de Yuhu, Eyenovation y FINSUS: son ~<b>$16,000</b> de flujo adicional que hoy no están contados.</li>
+          <li><b>El IVA de los patrocinios ya entró</b> (Yuhu, Eyenovation y FINSUS pagaron $116,000 con IVA). Queda conciliar ese IVA con la factura del Casino para no pagarlo dos veces.</li>
           <li><b>Blindar el paquete en especie.</b> Audio, hotel, café y fotografía llegaron por relación, no por contrato. Documentar qué se entregó a cambio convierte esos ~$183,500 de costo evitado en una oferta repetible para 2027.</li>
           <li><b>Abrir la venta antes.</b> El 62% de la taquilla entró en 8 días. Una preventa con precio escalonado desde junio sube el ticket promedio sin gastar un peso más en marketing.</li>
         </ul>
@@ -377,15 +389,15 @@ footer b{color:var(--oro)}
 
 </div>
 
-<footer><b>P&amp;L DE CIERRE · 3ER HR TRIBE SUMMIT 2026</b> ::: Grow2GetherMx ::: Desaprende y transfórmate</footer>
+<footer><b>P&amp;L DE CIERRE · 3ER HR TRIBE SUMMIT 2026</b> ::: Powered by G2G · Grow2GetherMx ::: Desaprende y transfórmate</footer>
 
 <script>
 (function(){
 "use strict";
-var DEF={i_bol:114,i_bruto:345735,i_com:21259.65,i_pax:150,i_brindis:80,
- p1:31320,p2:15000,p3:35000,p4:50000,p_cob:131320,
- c_pp:1622.77,c_prop:10,c_vino:12352.50,c_bot:800,c_com:3090,
- g_kit:35000,g_wch:9280,g_pap:2251.40,g_man:1920,g_gaf:1160,g_tof:3390,g_mar:5000,g_ale:229.90,g_web:1217.74};
+var DEF={i_bol:115,i_bruto:349050,i_com:21401.56,i_pax:174,
+ p1:31320,p2:17400,p3:40600,p4:58000,p_cob:147320,
+ c_tot:215297.43,c_vino:12352.50,c_bot:800,c_com:3090,
+ g_kit:35000,g_wch:13920,g_pap:2251.40,g_man:1920,g_gaf:1160,g_tof:3390,g_amz:5000,g_par:5000,g_ale:229.90,g_web:1217.74};
 
 var EXTRA_DEF=[{n:'',v:0},{n:'',v:0}];
 
@@ -423,41 +435,40 @@ function model(){
   var patro=V('p1')+V('p2')+V('p3')+V('p4');
   var cobrado=V('p_cob');
   var ing=neto+patro;
-  var ab=V('c_pp')*pax, prop=ab*V('c_prop')/100;
+  var ab=V('c_tot'), prop=0;
   var casino=V('c_vino')+V('c_bot')+V('c_com');
-  var fijos=V('g_kit')+V('g_wch')+V('g_pap')+V('g_man')+V('g_gaf')+V('g_tof')+V('g_mar')+V('g_ale')+V('g_web');
+  var fijos=V('g_kit')+V('g_wch')+V('g_pap')+V('g_man')+V('g_gaf')+V('g_tof')+V('g_amz')+V('g_par')+V('g_ale')+V('g_web');
   var extra=extraTotal();
   var cos=ab+prop+casino+fijos+extra;
   var uti=ing-cos;
-  var cvUnit=V('c_pp')*(1+V('c_prop')/100);
+  var cvUnit=0;
   return {bruto:bruto,com:com,neto:neto,patro:patro,cobrado:cobrado,ing:ing,
     ab:ab,prop:prop,casino:casino,fijos:fijos,extra:extra,cos:cos,uti:uti,
     pax:pax,bol:bol,cvUnit:cvUnit,
     netoUnit:neto/bol, mc:neto/bol-cvUnit,
-    porCobrar:patro-cobrado};
+    porCobrar:patro-cobrado, saldoCasino:ab-cobrado};
 }
 
 var ROWS=[
  {t:'sec',l:'INGRESOS'},
- {l:'Taquilla — ingreso bruto',f:function(m){return m.bruto;},d:'114 boletos'},
+ {l:'Taquilla — ingreso bruto',f:function(m){return m.bruto;},d:function(m){return m.bol+' boletos · entra a la cuenta HR Tribe';}},
  {l:'Comisiones de cobro',f:function(m){return -m.com;},d:function(m){return P(m.com/m.bruto)+' efectivo';}},
  {t:'tot',l:'Taquilla neta',f:function(m){return m.neto;}},
- {l:'Patrocinios en efectivo',f:function(m){return m.patro;},d:'4 marcas'},
+ {l:'Patrocinios en efectivo',f:function(m){return m.patro;},d:'4 marcas · con IVA · pagados directo al Casino'},
  {t:'tot',l:'INGRESO TOTAL',f:function(m){return m.ing;}},
  {t:'sec',l:'COSTOS'},
- {l:'Venue + alimentos y bebidas',f:function(m){return -m.ab;},d:function(m){return M(V('c_pp'))+' × '+m.pax+' pax';}},
- {l:'Propina',f:function(m){return -m.prop;},d:function(){return V('c_prop')+'% sobre A&B';}},
+ {l:'Club Casino Monterrey — factura final',f:function(m){return -m.ab;},d:function(m){return M(m.cobrado)+' lo pagaron patrocinadores · '+M(m.saldoCasino)+' HR Tribe';}},
  {l:'Vinos del brindis, botanas y comida del comité',f:function(m){return -m.casino;},d:'Cargos del Casino'},
  {l:'Kit del participante',f:function(){return -V('g_kit');},d:'Fijo'},
  {l:'Plataforma WeChamber',f:function(){return -V('g_wch');},d:'Fijo'},
  {l:'Papelería, manteles y gafetes',f:function(){return -(V('g_pap')+V('g_man')+V('g_gaf'));},d:'Fijo'},
- {l:'Otros proveedores',f:function(){return -(V('g_tof')+V('g_mar')+V('g_ale'));},d:'Toffee, Mariel Esquivel, Ale Flores'},
- {l:'Plan web Core',f:function(){return -V('g_web');},d:'Cargo prorrateado del día'},
+ {l:'Otros proveedores',f:function(){return -(V('g_tof')+V('g_amz')+V('g_par')+V('g_ale'));},d:'Toffee, Amazon gift card, parrillero, Ale Flores'},
+ {l:'Squarespace',f:function(){return -V('g_web');},d:'Plan web prorrateado'},
  {l:'Gastos adicionales',f:function(m){return -m.extra;},d:'Por definir',dim:1},
  {t:'tot',l:'COSTO TOTAL',f:function(m){return -m.cos;}},
  {t:'fin',l:'UTILIDAD DEL EVENTO',f:function(m){return m.uti;}},
  {t:'pct',l:'Margen sobre ingreso',f:function(m){return m.uti;},pct:1},
- {t:'sub',l:'Patrocinios aún por cobrar',f:function(m){return -m.porCobrar;},d:function(m){return m.porCobrar>0.5?'Riesgo de flujo':'Cobranza cerrada';},dim:1}
+ {t:'sub',l:'Saldo en la cuenta HR Tribe',f:function(m){return m.neto-m.saldoCasino-m.casino-m.fijos-m.extra;},d:'Taquilla neta − remanente del Casino − gastos'}
 ];
 
 function render(){
@@ -465,7 +476,8 @@ function render(){
 
   $('k1').textContent=M(m.ing);
   $('k2').textContent=M(m.cos);
-  $('k2f').textContent=P(m.ab/m.cos)+' es solo alimentos';
+  $('k2f').textContent=P(m.ab/m.cos)+' es la factura del Casino';
+  $('c_sal').textContent=M2(m.saldoCasino);
   $('k3').textContent=M(m.uti);
   $('k3').className='val '+(m.uti>=0?'au':'neg');
   $('k3f').textContent='margen de '+P(m.ing?m.uti/m.ing:0);
@@ -481,11 +493,12 @@ function render(){
     $('k5l').textContent='Patrocinios cobrados';
     $('k5').textContent=M(m.cobrado);
     $('k5').className='val pos';
-    $('k5f').textContent='4 de 4 marcas · todo en banco';
+    $('k5f').textContent='4 marcas · pagado directo al Casino';
     $('k5').closest('.kpi').className='kpi green';
   }
   $('extraTot').textContent='Subtotal adicional: '+M2(m.extra);
   $('g_tot').textContent=M2(m.casino+m.fijos+m.extra);
+  $('patroEstado').textContent=m.porCobrar>0.5?M(m.porCobrar)+' pendiente':'pagados directo al Casino';
 
   /* tabla */
   var h='';
@@ -515,14 +528,14 @@ function render(){
   } else {
     ac.className='note-box nb-cian';
     ac.innerHTML='<h4>✓ Cobranza cerrada — la utilidad ya está en banco</h4>'+
-      '<p style="color:var(--txt-sec)">Humand, Yuhu, Eyenovation y FINSUS pagaron los '+M(m.patro)+' comprometidos. '+
-      'Los '+M(m.uti)+' de utilidad son flujo real, no promesa. Queda pendiente cobrar el <b style="color:var(--txt)">IVA</b> de Yuhu, Eyenovation y FINSUS: ~$16,000 adicionales.</p>';
+      '<p style="color:var(--txt-sec)">Humand, Yuhu, Eyenovation y FINSUS pagaron '+M(m.patro)+' (con IVA) directo al Club Casino. '+
+      'HR Tribe transfirió el remanente de '+M(m.saldoCasino)+' y cubrió '+M(m.casino+m.fijos+m.extra)+' de gastos. Los '+M(m.uti)+' de utilidad son el saldo real de la cuenta.</p>';
   }
 
   /* colchón */
   $('c1').textContent=M(Math.max(0,m.uti));
-  $('c2').textContent=M(m.mc);
-  $('c2d').textContent='ticket neto de '+M(m.netoUnit)+' menos '+M(m.cvUnit)+' de A&B por persona';
+  $('c2').textContent=M(m.netoUnit);
+  $('c2d').textContent='ticket neto promedio: el Casino se contrató en firme, cada boleto extra fue margen completo';
   var fijoTotal=m.casino+m.fijos+m.extra+m.ab+m.prop;
   var be=m.netoUnit>0?Math.ceil((fijoTotal-m.patro)/m.netoUnit):Infinity;
   be=Math.max(0,be);
@@ -538,7 +551,7 @@ function render(){
   } else {
     $('c4t').textContent='Utilidad ya en banco';
     $('c4').closest('.card').style.borderTopColor='#4CC65C';
-    $('c4d').textContent='cobranza cerrada: los cuatro patrocinios pagaron y la taquilla está liquidada';
+    $('c4d').textContent='cobranza cerrada: patrocinios liquidados contra el Casino y taquilla cobrada';
   }
 
   var mg=m.ing?m.uti/m.ing:0;
@@ -560,8 +573,8 @@ function waterfall(m){
   var items=[
     {l:'Taquilla neta',v:m.neto,c:'#33B4D2'},
     {l:'Patrocinios',v:m.patro,c:'#3AEBFF'},
-    {l:'A&B + propina',v:-(m.ab+m.prop),c:'#BE2831'},
-    {l:'Casino directo',v:-m.casino,c:'#8E2A32'},
+    {l:'Casino factura',v:-m.ab,c:'#BE2831'},
+    {l:'Vinos y comité',v:-m.casino,c:'#8E2A32'},
     {l:'Kit y operación',v:-(m.fijos),c:'#7A1520'},
     {l:'Adicionales',v:-m.extra,c:'#5C3A1A'},
     {l:'Utilidad',v:m.uti,c:'#D4A93C',total:1}
@@ -607,7 +620,7 @@ function curva(){
   var D=[['13 jun',1],['13 jul',1],['17 jul',1],['20 jul',3],['21 jul',1],['25 jul',1],['29 jul',4],
    ['6 ago',4],['7 ago',2],['10 ago',3],['11 ago',5],['12 ago',5],['13 ago',2],['14 ago',6],
    ['16 ago',2],['17 ago',2],['19 ago',20],['20 ago',12],['21 ago',9],['22 ago',3],['23 ago',1],
-   ['24 ago',8],['25 ago',15],['26 ago',3]];
+   ['24 ago',8],['25 ago',15],['26 ago',3],['28 ago',1]];
   var W=520,H=250,pad={t:16,r:14,b:30,l:34};
   var gw=W-pad.l-pad.r, gh=H-pad.t-pad.b;
   var acc=0,pts=[];
@@ -638,8 +651,8 @@ function curva(){
   s+='<path d="'+area+'" fill="url(#gc)"/>';
   s+='<path d="'+line+'" fill="none" stroke="#3AEBFF" stroke-width="2.2" stroke-linejoin="round"/>';
   s+='<circle cx="'+x(pts.length-1).toFixed(1)+'" cy="'+y(max).toFixed(1)+'" r="4.5" fill="#D4A93C"/>';
-  s+='<text class="gval" x="'+(x(pts.length-1)-6).toFixed(1)+'" y="'+(y(max)-10).toFixed(1)+'" text-anchor="end" fill="#E8C766">114</text>';
-  var marks=[0,7,16,23];
+  s+='<text class="gval" x="'+(x(pts.length-1)-6).toFixed(1)+'" y="'+(y(max)-10).toFixed(1)+'" text-anchor="end" fill="#E8C766">115</text>';
+  var marks=[0,7,16,24];
   for(var t=0;t<marks.length;t++){
     s+='<text class="glab" x="'+x(marks[t]).toFixed(1)+'" y="'+(H-10)+'" text-anchor="'+(t===0?'start':(t===marks.length-1?'end':'middle'))+'">'+D[marks[t]][0]+'</text>';
   }
