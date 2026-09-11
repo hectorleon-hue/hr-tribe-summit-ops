@@ -214,6 +214,11 @@ footer b{color:var(--oro)}
   <section>
     <div class="shead"><span class="n">01</span><h2>Cifras del cierre</h2><span class="tag">Editable</span>
       <span class="hint">Cambia cualquier campo amarillo y el P&amp;L completo se recalcula</span></div>
+    <div class="btnrow" style="margin:0 0 18px;align-items:center">
+      <button class="g" id="btnSave" style="background:var(--oro);color:var(--navy)">💾 Guardar cambios</button>
+      <button id="btnXlsx">⬇ Exportar a Excel</button>
+      <span id="saveState" style="font-size:12px;color:var(--txt-dim)">Cargando cifras guardadas…</span>
+    </div>
 
     <div class="grid3">
       <div class="panel">
@@ -382,8 +387,9 @@ footer b{color:var(--oro)}
       </div>
     </div>
     <div class="btnrow">
-      <button class="g" onclick="reset()">↺ Restaurar cifras del cierre</button>
+      <button class="g" onclick="reset()">↺ Restaurar cifras publicadas</button>
       <button onclick="window.print()">⎙ Imprimir / PDF</button>
+      <button id="btnXlsx2">⬇ Exportar a Excel</button>
     </div>
   </section>
 
@@ -391,9 +397,14 @@ footer b{color:var(--oro)}
 
 <footer><b>P&amp;L DE CIERRE · 3ER HR TRIBE SUMMIT 2026</b> ::: Powered by G2G · Grow2GetherMx ::: Desaprende y transfórmate</footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
 <script>
 (function(){
 "use strict";
+var SUPABASE_URL="https://istfqqmuxcuhduakrojo.supabase.co";
+var SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlzdGZxcW11eGN1aGR1YWtyb2pvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU1MDgxNDQsImV4cCI6MjEwMTA4NDE0NH0.vWmIXGut_TO0Azw3VpYad0cG-pil5eVu9EsUiOq1NFc";
+var PNL_ID="summit-2026";
 var DEF={i_bol:115,i_bruto:349050,i_com:21401.56,i_pax:174,
  p1:31320,p2:17400,p3:40600,p4:58000,p_cob:147320,
  c_tot:215297.43,c_vino:12352.50,c_bot:800,c_com:3090,
@@ -666,11 +677,129 @@ window.reset=function(){
   render();
 };
 
+/* ---- persistencia (Supabase) ---- */
+var sb=null;try{if(window.supabase&&SUPABASE_URL)sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);}catch(e){}
+var dirty=false;
+function setState(msg,cls){var e=$('saveState');e.textContent=msg;e.style.color=cls==='ok'?'var(--verde)':cls==='bad'?'var(--rojo)':cls==='warn'?'var(--oro-soft)':'var(--txt-dim)';}
+function collect(){
+  var d={};for(var k in DEF){if(DEF.hasOwnProperty(k))d[k]=V(k);}
+  var ex=[],rows=$('extraBox').querySelectorAll('.addrow');
+  for(var i=0;i<rows.length;i++){var n=rows[i].querySelector('input[type=text]').value.trim(),v=parseFloat(rows[i].querySelector('input[type=number]').value)||0;if(n||v)ex.push({n:n,v:v});}
+  return {datos:d,extras:ex};
+}
+function apply(st){
+  for(var k in DEF){if(DEF.hasOwnProperty(k)&&st.datos&&st.datos[k]!==undefined)$(k).value=st.datos[k];}
+  $('extraBox').innerHTML='';extraN=0;
+  var ex=(st.extras&&st.extras.length)?st.extras:EXTRA_DEF;
+  for(var i=0;i<ex.length;i++)addExtra(ex[i].n,ex[i].v);
+  render();
+}
+function fmtWhen(iso){var d=new Date(iso);return d.toLocaleDateString('es-MX',{day:'numeric',month:'short'})+' '+d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});}
+async function load(){
+  if(!sb){setState('Sin conexión: cifras publicadas en el archivo','warn');return;}
+  try{var r=await sb.from('summit_pnl_cierre').select('*').eq('id',PNL_ID).maybeSingle();
+    if(r.error)throw r.error;
+    if(r.data){apply(r.data);setState('Guardado el '+fmtWhen(r.data.actualizado_en)+(r.data.autor?' · '+r.data.autor:''),'ok');}
+    else setState('Cifras publicadas en el archivo · aún sin guardar en la nube','warn');
+  }catch(e){console.warn(e);setState('No se pudo leer la nube: se muestran las cifras del archivo','bad');}
+}
+async function save(){
+  if(!sb){setState('Sin conexión a la nube','bad');return;}
+  var autor=localStorage.getItem('pnl_autor')||'';
+  if(!autor){autor=prompt('¿Quién guarda este cambio? (nombre)')||'';if(autor)localStorage.setItem('pnl_autor',autor);}
+  var st=collect();setState('Guardando…');
+  try{var r=await sb.from('summit_pnl_cierre').upsert({id:PNL_ID,datos:st.datos,extras:st.extras,autor:autor,actualizado_en:new Date().toISOString()});
+    if(r.error)throw r.error;dirty=false;setState('Guardado el '+fmtWhen(new Date().toISOString())+(autor?' · '+autor:''),'ok');
+  }catch(e){console.warn(e);setState('No se pudo guardar: '+(e.message||''),'bad');}
+}
+$('btnSave').onclick=save;
+document.addEventListener('input',function(e){if(e.target.matches('input')&&!dirty){dirty=true;setState('Cambios sin guardar','warn');}});
+window.addEventListener('beforeunload',function(e){if(dirty){e.preventDefault();e.returnValue='';}});
+
+/* ---- exportar a Excel (look & feel G2G) ---- */
+var LOGO_B64=(document.querySelector('.brand img')||{}).src||'';
+async function exportXlsx(){
+  if(!window.ExcelJS){alert('La librería de Excel no cargó. Revisa la conexión.');return;}
+  var m=model(), wb=new ExcelJS.Workbook();
+  wb.creator='Grow2GetherMx';wb.created=new Date();
+  var NAVY='FF041328',SURF='FF0A1E36',LINE='FF1B3B5F',CIAN='FF33B4D2',ORO='FFD4A93C',OROS='FFE8C766',WHITE='FFFFFFFF',TXT='FF1B1B1B',SEC='FF6C757D',ALT='FFF8F9FA',VERDE='FF31A540',ROJO='FFA5202A';
+  var H={name:'Montserrat',size:11,bold:true,color:{argb:WHITE}};
+  var money='"$"#,##0.00;[Red]-"$"#,##0.00';
+  function fill(c){return {type:'pattern',pattern:'solid',fgColor:{argb:c}};}
+  function header(ws,title,sub,cols){
+    ws.views=[{showGridLines:false}];
+    ws.getRow(1).height=8;
+    for(var r=2;r<=6;r++){ws.getRow(r).height=r===3?30:18;for(var c=1;c<=cols;c++)ws.getCell(r,c).fill=fill(NAVY);}
+    ws.getCell('B3').value=title;ws.getCell('B3').font={name:'Montserrat',size:18,bold:true,color:{argb:WHITE}};ws.getCell('B3').alignment={vertical:'middle'};
+    ws.getCell('B4').value=sub;ws.getCell('B4').font={name:'Open Sans',size:10,color:{argb:'FF9FB3C8'}};
+    ws.getCell('B5').value='POWERED BY GROW2GETHERMX  ·  DESAPRENDE Y TRANSFÓRMATE';ws.getCell('B5').font={name:'Montserrat',size:8,bold:true,color:{argb:OROS}};
+    if(LOGO_B64.indexOf('data:image/png')===0){var id=wb.addImage({base64:LOGO_B64,extension:'png'});ws.addImage(id,{tl:{col:cols-1.05,row:1.15},ext:{width:64,height:64}});}
+    ws.getRow(7).height=6;
+  }
+  function thead(ws,row,labels,widths){
+    labels.forEach(function(l,i){var c=ws.getCell(row,i+2);c.value=l;c.font={name:'Montserrat',size:9,bold:true,color:{argb:WHITE}};c.fill=fill(SURF);c.alignment={vertical:'middle',horizontal:i?'right':'left'};c.border={bottom:{style:'medium',color:{argb:ORO}}};});
+    ws.getColumn(1).width=2;widths.forEach(function(w,i){ws.getColumn(i+2).width=w;});
+  }
+  function footer(ws,row,cols){
+    ws.getRow(row).height=6;var r=row+1;for(var c=1;c<=cols;c++)ws.getCell(r,c).fill=fill(NAVY);
+    var f=ws.getCell(r,2);f.value='P&L DE CIERRE · 3ER HR TRIBE SUMMIT 2026  :::  Powered by Grow2GetherMx  :::  grow2gethermx.com';f.font={name:'Montserrat',size:8,bold:true,color:{argb:OROS}};ws.getRow(r).height=20;f.alignment={vertical:'middle'};
+    ws.getCell(r+1,2).value='Exportado el '+new Date().toLocaleString('es-MX')+' desde el tablero de cierre.';ws.getCell(r+1,2).font={name:'Open Sans',size:8,italic:true,color:{argb:SEC}};
+  }
+  /* Hoja 1: Estado de resultados */
+  var ws=wb.addWorksheet('Estado de resultados',{properties:{tabColor:{argb:ORO}}});
+  header(ws,'Cierre financiero — 3er HR Tribe Summit','Club Casino Monterrey · 26 de agosto 2026 · Cierre definitivo con IVA · '+m.bol+' boletos · '+m.pax+' personas en sala',6);
+  var kp=[['Ingreso total',m.ing,CIAN],['Costo total',m.cos,ROJO],['Utilidad del evento',m.uti,ORO],['Margen',m.ing?m.uti/m.ing:0,VERDE],['Utilidad por asistente',m.uti/m.pax,VERDE]];
+  kp.forEach(function(k,i){var col=2+i;var a=ws.getCell(8,col),b=ws.getCell(9,col);a.value=k[0].toUpperCase();a.font={name:'Montserrat',size:8,bold:true,color:{argb:SEC}};a.fill=fill(ALT);a.border={top:{style:'medium',color:{argb:k[2]}}};b.value=k[1];b.numFmt=i===3?'0.0%':money;b.font={name:'Montserrat',size:14,bold:true,color:{argb:TXT}};b.fill=fill(ALT);b.alignment={horizontal:'left'};ws.getRow(9).height=24;});
+  ws.getRow(10).height=10;
+  thead(ws,11,['Concepto','Monto','% del ingreso','Por asistente','Nota'],[46,18,14,16,60]);
+  var r=12;
+  ROWS.forEach(function(row){
+    if(row.t==='sec'){var c=ws.getCell(r,2);c.value=row.l;c.font={name:'Montserrat',size:9,bold:true,color:{argb:'FF1A8BA8'}};for(var cc=2;cc<=6;cc++)ws.getCell(r,cc).fill=fill('FFE8F6FA');r++;return;}
+    var val=row.f(m),nota=typeof row.d==='function'?row.d(m):(row.d||'');
+    var cells=[row.l,row.pct?(m.ing?m.uti/m.ing:0):val,row.pct?null:(m.ing?Math.abs(val)/m.ing:0),row.pct?null:val/m.pax,nota];
+    cells.forEach(function(v,i){var c=ws.getCell(r,i+2);c.value=v;c.font={name:'Open Sans',size:10,color:{argb:TXT}};c.alignment={horizontal:i&&i<4?'right':'left',vertical:'middle',wrapText:i===4};
+      if(i===1)c.numFmt=row.pct?'0.0%':money;if(i===2)c.numFmt='0.0%';if(i===3)c.numFmt=money;if(i===4)c.font={name:'Open Sans',size:9,italic:true,color:{argb:SEC}};
+      c.border={bottom:{style:'hair',color:{argb:'FFD0D7DE'}}};});
+    if(row.t==='tot'){for(var cc=2;cc<=6;cc++){ws.getCell(r,cc).font={name:'Montserrat',size:10,bold:true,color:{argb:TXT}};ws.getCell(r,cc).fill=fill(ALT);}}
+    if(row.t==='fin'){for(var cc=2;cc<=6;cc++){ws.getCell(r,cc).font={name:'Montserrat',size:12,bold:true,color:{argb:NAVY}};ws.getCell(r,cc).fill=fill('FFFBF1D6');ws.getCell(r,cc).border={top:{style:'medium',color:{argb:ORO}}};}ws.getRow(r).height=24;}
+    if(row.t==='pct'){for(var cc=2;cc<=6;cc++){ws.getCell(r,cc).font={name:'Montserrat',size:10,bold:true,color:{argb:'FF9A7A1E'}};}}
+    r++;
+  });
+  footer(ws,r+1,6);
+  /* Hoja 2: Cifras de entrada */
+  var w2=wb.addWorksheet('Cifras del cierre',{properties:{tabColor:{argb:CIAN}}});
+  header(w2,'Cifras del cierre','Todos los rubros capturados en el tablero. Cambia aquí y el P&L de la hoja 1 no recalcula: edita en el tablero y vuelve a exportar.',4);
+  thead(w2,8,['Rubro','Monto','Grupo'],[48,18,26]);
+  var labels={i_bol:['Boletos vendidos','Taquilla'],i_bruto:['Ingreso bruto cobrado','Taquilla'],i_com:['Comisiones de cobro','Taquilla'],i_pax:['Personas en sala','Taquilla'],p1:['Humand (sin IVA)','Patrocinios'],p2:['Yuhu (con IVA)','Patrocinios'],p3:['Eyenovation (con IVA)','Patrocinios'],p4:['FINSUS (con IVA)','Patrocinios'],p_cob:['Pagado directo al Casino','Patrocinios'],c_tot:['Costo total del Casino (factura final)','Casino'],c_vino:['Vinos del brindis','Casino'],c_bot:['Botanas','Casino'],c_com:['Comida del comité','Casino'],g_kit:['Kit del participante','Gastos'],g_wch:['Plataforma WeChamber (3 cargos)','Gastos'],g_pap:['Papelería','Gastos'],g_man:['Manteles','Gastos'],g_gaf:['Gafetes','Gastos'],g_tof:['Toffee','Gastos'],g_amz:['Amazon Gift Card','Gastos'],g_par:['Parrillero · carne asada','Gastos'],g_ale:['Ale Flores','Gastos'],g_web:['Squarespace','Gastos']};
+  var rr=9;
+  for(var k in labels){if(!labels.hasOwnProperty(k))continue;var a=w2.getCell(rr,2),b=w2.getCell(rr,3),c=w2.getCell(rr,4);a.value=labels[k][0];b.value=V(k);c.value=labels[k][1];
+    a.font=c.font={name:'Open Sans',size:10,color:{argb:TXT}};b.font={name:'Open Sans',size:10,bold:true,color:{argb:TXT}};b.numFmt=(k==='i_bol'||k==='i_pax')?'0':money;b.alignment={horizontal:'right'};
+    [a,b,c].forEach(function(x){x.border={bottom:{style:'hair',color:{argb:'FFD0D7DE'}}};if(rr%2)x.fill=fill(ALT);});rr++;}
+  var ex=collect().extras;
+  if(ex.length){rr++;var t=w2.getCell(rr,2);t.value='GASTOS ADICIONALES';t.font={name:'Montserrat',size:9,bold:true,color:{argb:'FF1A8BA8'}};rr++;
+    ex.forEach(function(e){w2.getCell(rr,2).value=e.n||'(sin concepto)';w2.getCell(rr,3).value=e.v;w2.getCell(rr,3).numFmt=money;w2.getCell(rr,4).value='Adicional';rr++;});}
+  rr++;var s2=w2.getCell(rr,2);s2.value='Remanente del Casino cubierto por HR Tribe';s2.font={name:'Montserrat',size:10,bold:true,color:{argb:NAVY}};w2.getCell(rr,3).value=m.saldoCasino;w2.getCell(rr,3).numFmt=money;w2.getCell(rr,3).font={name:'Montserrat',size:10,bold:true,color:{argb:NAVY}};
+  footer(w2,rr+1,4);
+  /* Hoja 3: Anatomía de la venta */
+  var w3=wb.addWorksheet('Anatomía de la venta',{properties:{tabColor:{argb:VERDE}}});
+  header(w3,'Anatomía de la venta','115 boletos en 81 transacciones · junio a agosto 2026 · 62% vendido del 19 al 26 de agosto',5);
+  thead(w3,8,['Tarifa','Boletos','Ingreso','Ticket'],[34,12,16,14]);
+  var trs=document.querySelectorAll('section:nth-of-type(5) tbody tr');var r3=9;
+  trs.forEach(function(tr){var td=tr.querySelectorAll('td');var vals=[td[0].textContent,parseFloat(td[1].textContent.replace(/[^0-9.]/g,'')),parseFloat(td[2].textContent.replace(/[^0-9.]/g,'')),parseFloat(td[3].textContent.replace(/[^0-9.]/g,''))];
+    vals.forEach(function(v,i){var c=w3.getCell(r3,i+2);c.value=v;c.font={name:'Open Sans',size:10,bold:tr.className==='tot',color:{argb:TXT}};if(i>=2)c.numFmt=money;if(i)c.alignment={horizontal:'right'};c.border={bottom:{style:'hair',color:{argb:'FFD0D7DE'}}};if(tr.className==='tot')c.fill=fill('FFFBF1D6');});r3++;});
+  footer(w3,r3+1,5);
+  var buf=await wb.xlsx.writeBuffer();
+  var blob=new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='PnL_Cierre_3er_HRTribe_Summit_2026.xlsx';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},2000);
+}
+$('btnXlsx').onclick=exportXlsx;$('btnXlsx2').onclick=exportXlsx;
+
 /* init */
 for(var k in DEF){if(DEF.hasOwnProperty(k))$(k).addEventListener('input',render);}
 for(var i=0;i<EXTRA_DEF.length;i++)addExtra(EXTRA_DEF[i].n,EXTRA_DEF[i].v);
 curva();
 render();
+load();
 })();
 </script>
 </body>
